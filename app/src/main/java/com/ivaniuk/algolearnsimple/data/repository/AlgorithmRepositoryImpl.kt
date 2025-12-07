@@ -5,11 +5,14 @@ import com.ivaniuk.algolearnsimple.domain.model.AlgorithmCategory
 import com.ivaniuk.algolearnsimple.domain.repository.AlgorithmRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 
 class AlgorithmRepositoryImpl : AlgorithmRepository {
 
-    private val algorithms = listOf(
+
+    private val initialAlgorithms = listOf(
         Algorithm(
             id = 1,
             title = "Bubble Sort",
@@ -112,7 +115,6 @@ class AlgorithmRepositoryImpl : AlgorithmRepository {
                         val vertex = stack.removeLast()
                         if (vertex !in visited) {
                             visited.add(vertex)
-                            println("Посещена вершина: $vertex")
                             
                             graph[vertex]?.forEach { neighbor ->
                                 if (neighbor !in visited) {
@@ -133,28 +135,37 @@ class AlgorithmRepositoryImpl : AlgorithmRepository {
         )
     )
 
-    override fun getAllAlgorithms(): Flow<List<Algorithm>> = flow {
-        delay(100) // Имитация загрузки
-        emit(algorithms)
-    }
 
-    override fun getAlgorithmsByCategory(category: String): Flow<List<Algorithm>> = flow {
-        delay(50)
-        emit(algorithms.filter { it.category.name == category })
-    }
+    private val _algorithms = MutableStateFlow(initialAlgorithms)
 
-    override fun getFavoriteAlgorithms(): Flow<List<Algorithm>> = flow {
-        delay(50)
-        emit(algorithms.filter { it.isFavorite })
-    }
+    override fun getAllAlgorithms(): Flow<List<Algorithm>> = _algorithms
+
+    override fun getAlgorithmsByCategory(category: String): Flow<List<Algorithm>> =
+        _algorithms.map { algorithms ->
+            algorithms.filter { it.category.name == category }
+        }
+
+    override fun getFavoriteAlgorithms(): Flow<List<Algorithm>> =
+        _algorithms.map { algorithms ->
+            algorithms.filter { it.isFavorite }
+        }
 
     override suspend fun toggleFavorite(algorithmId: Int) {
-        delay(100) // Имитация сохранения
-        // В реальном приложении здесь было бы обновление состояния
+        delay(50)
+
+        _algorithms.update { currentAlgorithms ->
+            currentAlgorithms.map { algorithm ->
+                if (algorithm.id == algorithmId) {
+                    algorithm.copy(isFavorite = !algorithm.isFavorite)
+                } else {
+                    algorithm
+                }
+            }
+        }
     }
 
     override suspend fun getAlgorithmById(id: Int): Algorithm? {
-        delay(50)
-        return algorithms.find { it.id == id }
+        delay(30)
+        return _algorithms.value.find { it.id == id }
     }
 }
