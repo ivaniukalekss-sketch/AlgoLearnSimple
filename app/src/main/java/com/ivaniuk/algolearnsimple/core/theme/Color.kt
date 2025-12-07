@@ -1,4 +1,4 @@
-package com.ivaniuk.algolearnsimple.ui.theme
+package com.ivaniuk.algolearnsimple.core.theme
 
 import androidx.compose.ui.graphics.Color
 
