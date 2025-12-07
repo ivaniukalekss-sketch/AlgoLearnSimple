@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ivaniuk.algolearnsimple.AppContainer
 import com.ivaniuk.algolearnsimple.presentation.screens.AlgorithmDetailScreen
+import com.ivaniuk.algolearnsimple.presentation.screens.FavoritesScreen
 import com.ivaniuk.algolearnsimple.presentation.screens.HomeScreen
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
@@ -32,7 +33,12 @@ fun AppNavigation(
                     navController.navigate("algorithm/$algorithmId")
                 },
                 onToggleFavorite = { algorithmId ->
-                    viewModel.toggleFavorite(algorithmId)
+                    coroutineScope.launch {
+                        viewModel.toggleFavorite(algorithmId)
+                    }
+                },
+                onFavoritesClick = {
+                    navController.navigate("favorites")
                 }
             )
         }
@@ -45,7 +51,28 @@ fun AppNavigation(
             AlgorithmDetailScreen(
                 algorithm = currentAlgorithm,
                 onBack = { navController.navigateUp() },
-                onToggleFavorite = { algorithmId?.let { viewModel.toggleFavorite(it) } }
+                onToggleFavorite = {
+                    algorithmId?.let {
+                        coroutineScope.launch {
+                            viewModel.toggleFavorite(it)
+                        }
+                    }
+                }
+            )
+        }
+
+        composable("favorites") {
+            FavoritesScreen(
+                viewModel = viewModel,
+                onAlgorithmClick = { algorithmId ->
+                    navController.navigate("algorithm/$algorithmId")
+                },
+                onToggleFavorite = { algorithmId ->
+                    coroutineScope.launch {
+                        viewModel.toggleFavorite(algorithmId)
+                    }
+                },
+                onBack = { navController.navigateUp() }
             )
         }
     }

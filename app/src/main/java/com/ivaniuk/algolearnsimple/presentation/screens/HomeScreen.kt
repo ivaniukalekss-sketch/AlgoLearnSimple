@@ -10,14 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,7 +31,8 @@ import com.ivaniuk.algolearnsimple.presentation.viewmodel.HomeViewModel
 fun HomeScreen(
     viewModel: HomeViewModel,
     onAlgorithmClick: (Int) -> Unit,
-    onToggleFavorite: (Int) -> Unit
+    onToggleFavorite: (Int) -> Unit,
+    onFavoritesClick: () -> Unit
 ) {
     val algorithms by viewModel.algorithms.collectAsState()
     var searchText by remember { mutableStateOf("") }
@@ -60,6 +56,14 @@ fun HomeScreen(
                             text = "AlgoLearn",
                             fontWeight = FontWeight.Bold
                         )
+                    },
+                    actions = {
+                        IconButton(onClick = onFavoritesClick) {
+                            Icon(
+                                imageVector = Icons.Default.Favorite,
+                                contentDescription = "Избранное"
+                            )
+                        }
                     }
                 )
 
