@@ -16,6 +16,7 @@ import com.ivaniuk.algolearnsimple.presentation.screens.FavoritesScreen
 import com.ivaniuk.algolearnsimple.presentation.screens.HomeScreen
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
+import com.ivaniuk.algolearnsimple.data.visualizer.BinarySearchVisualizer
 
 @Composable
 fun AppNavigation(
@@ -86,7 +87,10 @@ fun AppNavigation(
             val algorithmId = backStackEntry.arguments?.getString("algorithmId")?.toIntOrNull()
             val visualizer = when (algorithmId) {
                 1 -> BubbleSortVisualizer()
-                else -> BubbleSortVisualizer() // По умолчанию
+                2 -> BinarySearchVisualizer()
+                //3 -> BubbleSortVisualizer()
+                //4 -> BubbleSortVisualizer()
+                else -> BubbleSortVisualizer()
             }
 
             val viewModel = VisualizationViewModel(visualizer)
