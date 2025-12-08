@@ -1,5 +1,8 @@
 package com.ivaniuk.algolearnsimple.presentation.navigation
 
+import com.ivaniuk.algolearnsimple.data.visualizer.BubbleSortVisualizer
+import com.ivaniuk.algolearnsimple.presentation.screens.VisualizationScreen
+import com.ivaniuk.algolearnsimple.presentation.viewmodel.VisualizationViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -72,6 +75,20 @@ fun AppNavigation(
                         viewModel.toggleFavorite(algorithmId)
                     }
                 },
+                onBack = { navController.navigateUp() }
+            )
+        }
+        composable("visualization/{algorithmId}") { backStackEntry ->
+            val algorithmId = backStackEntry.arguments?.getString("algorithmId")?.toIntOrNull()
+            val visualizer = when (algorithmId) {
+                1 -> BubbleSortVisualizer()
+                else -> BubbleSortVisualizer() // По умолчанию
+            }
+
+            val viewModel = VisualizationViewModel(visualizer)
+
+            VisualizationScreen(
+                viewModel = viewModel,
                 onBack = { navController.navigateUp() }
             )
         }

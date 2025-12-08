@@ -1,5 +1,6 @@
 package com.ivaniuk.algolearnsimple.presentation.components
 
+import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ fun AlgorithmCard(
     algorithm: Algorithm,
     onCardClick: () -> Unit,
     onFavoriteClick: () -> Unit,
+    onVisualizeClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -49,26 +51,38 @@ fun AlgorithmCard(
                     fontWeight = FontWeight.Bold
                 )
 
-                IconButton(onClick = onFavoriteClick) {
-                    Icon(
-                        imageVector = if (algorithm.isFavorite) {
-                            Icons.Default.Favorite
-                        } else {
-                            Icons.Outlined.FavoriteBorder
-                        },
-                        contentDescription = if (algorithm.isFavorite) {
-                            "Удалить из избранного"
-                        } else {
-                            "Добавить в избранное"
-                        },
-                        tint = if (algorithm.isFavorite) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        }
-                    )
+                Row {
+                    // Кнопка визуализации
+                    IconButton(onClick = onVisualizeClick) {
+                        Icon(
+                            imageVector = Icons.Filled.PlayCircleOutline,
+                            contentDescription = "Визуализировать",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+                    // Кнопка избранного
+                    IconButton(onClick = onFavoriteClick) {
+                        Icon(
+                            imageVector = if (algorithm.isFavorite) {
+                                Icons.Default.Favorite
+                            } else {
+                                Icons.Outlined.FavoriteBorder
+                            },
+                            contentDescription = if (algorithm.isFavorite) {
+                                "Удалить из избранного"
+                            } else {
+                                "Добавить в избранное"
+                            },
+                            tint = if (algorithm.isFavorite) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            }
+                        )
+                    }
                 }
-            }
+                }
 
             Text(
                 text = algorithm.description.take(100) + "...",

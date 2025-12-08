@@ -32,7 +32,8 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onAlgorithmClick: (Int) -> Unit,
     onToggleFavorite: (Int) -> Unit,
-    onFavoritesClick: () -> Unit
+    onFavoritesClick: () -> Unit,
+    onVisualizeClick: (Int) -> Unit
 ) {
     val algorithms by viewModel.algorithms.collectAsState()
     var searchText by remember { mutableStateOf("") }
@@ -130,7 +131,8 @@ fun HomeScreen(
                             AlgorithmCard(
                                 algorithm = algorithm,
                                 onCardClick = { onAlgorithmClick(algorithm.id) },
-                                onFavoriteClick = { onToggleFavorite(algorithm.id) }
+                                onFavoriteClick = { onToggleFavorite(algorithm.id) },
+                                onVisualizeClick = { onVisualizeClick(algorithm.id) }
                             )
                         }
                     }
