@@ -1,0 +1,17 @@
+* [33m292513c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m feat: добавление BubbleSortVisualizer
+* [33m37b10d0[m feat: добавление интерфейса AlgorithmVisualizer
+* [33ma0db816[m feat: добавление базовых моделей для визуализации
+* [33mbf530b4[m feat: добавление модели VisualizationState для визуализации
+* [33m0239d06[m fix: исправление работы избранного и навигации
+* [33mc79b40c[m fix: исправление работы избранного в репозитории
+* [33m5354dd1[m feat: обновление MainActivity с навигацией
+* [33m32585e4[m feat: создание детального экрана AlgorithmDetailScreen
+* [33mfeb0d5f[m feat: создание главного экрана HomeScreen
+* [33mf3c9647[m feat: создание компонента AlgorithmCard
+* [33mfe9c854[m feat: добавление навигации между экранами
+* [33ma755ac4[m feat: добавление HomeViewModel
+* [33me6ccf0e[m feat: добавление AppContainer для управления зависимостями
+* [33m92d065b[m feat: реализация репозитория с данными алгоритмов
+* [33m308f638[m feat: добавление моделей Algorithm и AlgorithmCategory
+* [33mb6ad332[m feat: добавление темы и цветовой палитры
+* [33mc5e3f5d[m feat: создание базового проекта AlgoLearnSimple
