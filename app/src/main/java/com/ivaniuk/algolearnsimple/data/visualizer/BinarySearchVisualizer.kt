@@ -19,11 +19,12 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
         val steps = mutableListOf<VisualizationStep>()
         var stepCounter = 0
 
+        // Шаг 0: Начало
         steps.add(
             VisualizationStep(
                 stepNumber = stepCounter++,
                 array = array,
-                description = "Начинаем бинарный поиск элемента $target в отсортированном массиве"
+                description = "🔍 Начинаем бинарный поиск элемента $target в отсортированном массиве из ${array.size} элементов"
             )
         )
 
@@ -31,6 +32,7 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
         var right = array.size - 1
 
         while (left <= right) {
+            // Шаг 1: Вычисление середины
             val mid = left + (right - left) / 2
 
             steps.add(
@@ -38,21 +40,54 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
                     stepNumber = stepCounter++,
                     array = array,
                     highlightedIndices = (left..right).toSet(),
+                    description = "Диапазон поиска: индексы [$left, $right]. Вычисляем середину..."
+                )
+            )
+
+            // Шаг 2: Подсветка середины
+            steps.add(
+                VisualizationStep(
+                    stepNumber = stepCounter++,
+                    array = array,
+                    highlightedIndices = (left..right).toSet(),
                     comparingIndices = setOf(mid),
-                    description = "Диапазон поиска: [$left, $right]. Середина: индекс $mid (значение ${array[mid]})",
-                    codeLine = "mid = left + (right - left) / 2  // $mid"
+                    description = "Середина: индекс $mid (значение ${array[mid]})",
+                    codeLine = "val mid = left + (right - left) / 2  // mid = $mid"
+                )
+            )
+
+            // Шаг 3: Сравнение с искомым значением
+            steps.add(
+                VisualizationStep(
+                    stepNumber = stepCounter++,
+                    array = array,
+                    comparingIndices = setOf(mid),
+                    targetIndex = array.indexOf(target).takeIf { it != -1 },
+                    description = "Сравниваем ${array[mid]} с искомым значением $target"
                 )
             )
 
             when {
                 array[mid] == target -> {
+                    // Шаг 4: Найден!
                     steps.add(
                         VisualizationStep(
                             stepNumber = stepCounter++,
                             array = array,
                             highlightedIndices = setOf(mid),
+                            description = "🎯 ${array[mid]} == $target → Элемент найден!",
+                            codeLine = "if (arr[mid] == target) return mid"
+                        )
+                    )
+
+                    // Шаг 5: Финальная подсветка
+                    steps.add(
+                        VisualizationStep(
+                            stepNumber = stepCounter,
+                            array = array,
+                            highlightedIndices = setOf(mid),
                             description = "✅ Элемент $target найден на позиции $mid!",
-                            codeLine = "return $mid  // элемент найден"
+                            codeLine = "return $mid  // успешный поиск"
                         )
                     )
                     emit(steps)
@@ -60,36 +95,63 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
                 }
 
                 array[mid] < target -> {
+                    // Шаг 4: Ищем справа
                     steps.add(
                         VisualizationStep(
                             stepNumber = stepCounter++,
                             array = array,
+                            comparingIndices = setOf(mid),
                             highlightedIndices = (mid + 1..right).toSet(),
                             description = "${array[mid]} < $target → ищем в правой половине [${mid + 1}, $right]",
                             codeLine = "left = mid + 1  // ищем справа"
                         )
                     )
-                    left = mid + 1
-                }
 
-                else -> {
+                    // Шаг 5: Обновление границы
+                    val oldLeft = left
+                    left = mid + 1
                     steps.add(
                         VisualizationStep(
                             stepNumber = stepCounter++,
                             array = array,
+                            highlightedIndices = (left..right).toSet(),
+                            description = "Новый диапазон: [$left, $right] (было [$oldLeft, $right])"
+                        )
+                    )
+                }
+
+                else -> {
+                    // Шаг 4: Ищем слева
+                    steps.add(
+                        VisualizationStep(
+                            stepNumber = stepCounter++,
+                            array = array,
+                            comparingIndices = setOf(mid),
                             highlightedIndices = (left until mid).toSet(),
                             description = "${array[mid]} > $target → ищем в левой половине [$left, ${mid - 1}]",
                             codeLine = "right = mid - 1  // ищем слева"
                         )
                     )
+
+                    // Шаг 5: Обновление границы
+                    val oldRight = right
                     right = mid - 1
+                    steps.add(
+                        VisualizationStep(
+                            stepNumber = stepCounter++,
+                            array = array,
+                            highlightedIndices = (left..right).toSet(),
+                            description = "Новый диапазон: [$left, $right] (было [$left, $oldRight])"
+                        )
+                    )
                 }
             }
         }
 
+        // Элемент не найден
         steps.add(
             VisualizationStep(
-                stepNumber = stepCounter,
+                stepNumber = stepCounter++,
                 array = array,
                 description = "❌ Элемент $target не найден в массиве",
                 codeLine = "return -1  // элемент не найден"
@@ -101,8 +163,8 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
 
     override fun getDefaultInput(): Any {
         return Pair(
-            listOf(2, 5, 8, 12, 16, 23, 38, 45, 56, 67, 78, 89, 90),
-            45
+            listOf(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25),
+            13
         )
     }
 

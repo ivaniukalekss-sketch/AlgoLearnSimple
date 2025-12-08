@@ -48,8 +48,13 @@ class VisualizationViewModel(
 
         _isPlaying.value = true
         playbackJob = viewModelScope.launch {
+            val baseDelay = when (visualizer.algorithmName) {
+                "Bubble Sort" -> _speed.value.delayMs * 2  // Для сортировки медленнее
+                else -> _speed.value.delayMs
+            }
+
             while (_currentStepIndex.value < _steps.value.size - 1 && _isPlaying.value) {
-                delay(_speed.value.delayMs)
+                delay(baseDelay)
                 nextStep()
             }
             _isPlaying.value = false
@@ -89,8 +94,11 @@ class VisualizationViewModel(
 
     fun setSpeed(newSpeed: Speed) {
         _speed.value = newSpeed
+        // Если воспроизведение идёт, перезапускаем с новой скоростью
         if (_isPlaying.value) {
+            val currentIndex = _currentStepIndex.value
             pause()
+            _currentStepIndex.value = currentIndex
             play()
         }
     }
@@ -119,6 +127,7 @@ class VisualizationViewModel(
         super.onCleared()
         playbackJob?.cancel()
     }
+
     fun goToLastStep() {
         _currentStepIndex.value = _steps.value.size - 1
         pause()

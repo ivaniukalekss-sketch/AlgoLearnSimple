@@ -17,6 +17,7 @@ class BubbleSortVisualizer : AlgorithmVisualizer {
         val mutableArray = array.toMutableList()
         val n = mutableArray.size
 
+        // Шаг 0: Исходный массив
         steps.add(
             VisualizationStep(
                 stepNumber = 0,
@@ -28,50 +29,99 @@ class BubbleSortVisualizer : AlgorithmVisualizer {
         var stepCounter = 1
 
         for (i in 0 until n - 1) {
+            // Шаг: Начало нового прохода
+            steps.add(
+                VisualizationStep(
+                    stepNumber = stepCounter++,
+                    array = mutableArray.toList(),
+                    description = "Начинаем проход ${i + 1} из ${n - 1}"
+                )
+            )
+
             for (j in 0 until n - i - 1) {
+                // Шаг 1: Подсветка элементов для сравнения
                 steps.add(
                     VisualizationStep(
                         stepNumber = stepCounter++,
                         array = mutableArray.toList(),
                         comparingIndices = setOf(j, j + 1),
                         sortedIndices = (n - i until n).toSet(),
-                        description = "Сравниваем элементы [${j}] = ${mutableArray[j]} и [${j + 1}] = ${mutableArray[j + 1]}"
+                        description = "Сравниваем элементы [${j}] = ${mutableArray[j]} и [${j + 1}] = ${mutableArray[j + 1]}",
+                        codeLine = "if (arr[$j] > arr[${j + 1}])"
                     )
                 )
 
                 if (mutableArray[j] > mutableArray[j + 1]) {
+                    // Шаг 2: Подготовка к обмену (подсветка красным)
+                    steps.add(
+                        VisualizationStep(
+                            stepNumber = stepCounter++,
+                            array = mutableArray.toList(),
+                            comparingIndices = setOf(j, j + 1),
+                            swappedIndices = setOf(j, j + 1), // Оба красные
+                            sortedIndices = (n - i until n).toSet(),
+                            description = "${mutableArray[j]} > ${mutableArray[j + 1]} → готовимся к обмену"
+                        )
+                    )
+
+                    // Обмен значений
                     val temp = mutableArray[j]
                     mutableArray[j] = mutableArray[j + 1]
                     mutableArray[j + 1] = temp
 
+                    // Шаг 3: После обмена (один элемент переместился)
                     steps.add(
                         VisualizationStep(
                             stepNumber = stepCounter++,
                             array = mutableArray.toList(),
                             swappedIndices = setOf(j, j + 1),
                             sortedIndices = (n - i until n).toSet(),
-                            description = "Меняем местами ${mutableArray[j + 1]} и ${mutableArray[j]}"
+                            description = "Обменяли местами: теперь arr[$j] = ${mutableArray[j]}, arr[${j + 1}] = ${mutableArray[j + 1]}",
+                            codeLine = "val temp = arr[$j]; arr[$j] = arr[${j + 1}]; arr[${j + 1}] = temp"
+                        )
+                    )
+
+                    // Шаг 4: Завершение обмена (сброс цветов)
+                    steps.add(
+                        VisualizationStep(
+                            stepNumber = stepCounter++,
+                            array = mutableArray.toList(),
+                            sortedIndices = (n - i until n).toSet(),
+                            description = "Обмен завершён"
+                        )
+                    )
+                } else {
+                    // Шаг 2а: Элементы в правильном порядке
+                    steps.add(
+                        VisualizationStep(
+                            stepNumber = stepCounter++,
+                            array = mutableArray.toList(),
+                            comparingIndices = setOf(j, j + 1),
+                            sortedIndices = (n - i until n).toSet(),
+                            description = "${mutableArray[j]} ≤ ${mutableArray[j + 1]} → порядок правильный, идём дальше"
                         )
                     )
                 }
             }
 
+            // Шаг: Элемент на своём месте
             steps.add(
                 VisualizationStep(
                     stepNumber = stepCounter++,
                     array = mutableArray.toList(),
                     sortedIndices = (n - i - 1 until n).toSet(),
-                    description = "Элемент на позиции ${n - i - 1} теперь на своём месте"
+                    description = "Элемент на позиции ${n - i - 1} теперь на своём месте (значение = ${mutableArray[n - i - 1]})"
                 )
             )
         }
 
+        // Финальный шаг: Весь массив отсортирован
         steps.add(
             VisualizationStep(
                 stepNumber = stepCounter,
                 array = mutableArray.toList(),
                 sortedIndices = mutableArray.indices.toSet(),
-                description = "Массив отсортирован!"
+                description = "✅ Массив полностью отсортирован!"
             )
         )
 

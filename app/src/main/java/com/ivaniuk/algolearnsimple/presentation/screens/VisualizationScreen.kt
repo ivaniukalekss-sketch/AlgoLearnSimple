@@ -1,5 +1,12 @@
 package com.ivaniuk.algolearnsimple.presentation.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.core.tween
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -28,6 +35,9 @@ fun VisualizationScreen(
     val speed by viewModel.speed.collectAsState()
 
     val currentStep = viewModel.getCurrentStep()
+    LaunchedEffect(isPlaying, currentStepIndex) {
+        println("DEBUG: isPlaying = $isPlaying, currentStepIndex = $currentStepIndex, steps = ${steps.size}")
+    }
 
     Scaffold(
         topBar = {
@@ -67,16 +77,57 @@ fun VisualizationScreen(
                     viewModel.setStep(index)
                 }
             )
+            if (isPlaying) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Шаг ${currentStepIndex + 1} из ${steps.size}",
+                            style = MaterialTheme.typography.titleSmall
+                        )
+
+                        // Индикатор скорости
+                        Text(
+                            text = "Скорость: ${when (speed) {
+                                Speed.SLOW -> "🐌 Медленно"
+                                Speed.MEDIUM -> "🚶 Средне"
+                                Speed.FAST -> "🏃 Быстро"
+                                Speed.VERY_FAST -> "⚡ Очень быстро"
+                            }}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
             if (currentStep != null) {
                 if (currentStep.array != null) {
+                    val maxBarHeight = if (viewModel.getAlgorithmName() == "Binary Search") {
+                        180.dp
+                    } else {
+                        200.dp
+                    }
                     Card(
                         modifier = Modifier.fillMaxWidth()
-                    ) {
+                    )
+
+                    {
                         Column(
                             modifier = Modifier.padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
+                        )
+                        {
                             ArrayVisualizer(
                                 array = currentStep.array,
                                 highlightedIndices = currentStep.highlightedIndices,
@@ -84,7 +135,15 @@ fun VisualizationScreen(
                                 swappedIndices = currentStep.swappedIndices,
                                 sortedIndices = currentStep.sortedIndices,
                                 currentIndex = currentStep.currentIndex,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(250.dp)
+                            )
+                            Text(
+                                text = "Элементов: ${currentStep.array.size}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(top = 8.dp)
                             )
                         }
                     }
