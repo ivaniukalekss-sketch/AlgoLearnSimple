@@ -28,7 +28,7 @@ fun AlgorithmCard(
     algorithm: Algorithm,
     onCardClick: () -> Unit,
     onFavoriteClick: () -> Unit,
-    onVisualizeClick: () -> Unit,
+    onVisualizeClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -53,12 +53,14 @@ fun AlgorithmCard(
 
                 Row {
                     // Кнопка визуализации
-                    IconButton(onClick = onVisualizeClick) {
-                        Icon(
-                            imageVector = Icons.Filled.PlayCircleOutline,
-                            contentDescription = "Визуализировать",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+                    if (onVisualizeClick != null) {
+                        IconButton(onClick = onVisualizeClick) {
+                            Icon(
+                                imageVector = Icons.Default.PlayCircleOutline,
+                                contentDescription = "Визуализировать",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
 
                     // Кнопка избранного

@@ -107,7 +107,7 @@ fun FavoritesScreen(
                             AlgorithmCard(
                                 algorithm = algorithm,
                                 onCardClick = { onAlgorithmClick(algorithm.id) },
-                                onFavoriteClick = { onToggleFavorite(algorithm.id) }
+                                onFavoriteClick = { onToggleFavorite(algorithm.id) },
                             )
                         }
                     }

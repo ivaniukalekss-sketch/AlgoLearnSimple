@@ -42,6 +42,9 @@ fun AppNavigation(
                 },
                 onFavoritesClick = {
                     navController.navigate("favorites")
+                },
+                onVisualizeClick = { algorithmId ->
+                    navController.navigate("visualization/$algorithmId")
                 }
             )
         }
@@ -75,6 +78,7 @@ fun AppNavigation(
                         viewModel.toggleFavorite(algorithmId)
                     }
                 },
+
                 onBack = { navController.navigateUp() }
             )
         }
