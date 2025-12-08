@@ -119,4 +119,8 @@ class VisualizationViewModel(
         super.onCleared()
         playbackJob?.cancel()
     }
+    fun goToLastStep() {
+        _currentStepIndex.value = _steps.value.size - 1
+        pause()
+    }
 }
