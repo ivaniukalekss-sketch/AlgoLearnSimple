@@ -21,6 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ivaniuk.algolearnsimple.domain.model.Speed
 import com.ivaniuk.algolearnsimple.presentation.components.ArrayVisualizer
+import com.ivaniuk.algolearnsimple.presentation.components.GraphLegend
+import com.ivaniuk.algolearnsimple.presentation.components.GraphVisualizer
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.VisualizationViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -139,6 +141,28 @@ fun VisualizationScreen(
                                     .fillMaxWidth()
                                     .height(250.dp)
                             )
+                            if (currentStep.graph != null) {
+                                Card(
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(16.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        GraphVisualizer(
+                                            graph = currentStep.graph,
+                                            highlightedNodes = currentStep.highlightedIndices,
+                                            currentNodes = currentStep.comparingIndices,
+                                            visitedNodes = currentStep.sortedIndices,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(300.dp)
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        GraphLegend(modifier = Modifier.fillMaxWidth())
+                                    }
+                                }
+                            }
                             Text(
                                 text = "Элементов: ${currentStep.array.size}",
                                 style = MaterialTheme.typography.labelSmall,
