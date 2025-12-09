@@ -1,5 +1,7 @@
 package com.ivaniuk.algolearnsimple.presentation.navigation
 
+import com.ivaniuk.algolearnsimple.data.visualizer.QuickSortVisualizer
+import com.ivaniuk.algolearnsimple.data.visualizer.DFSVisualizer
 import com.ivaniuk.algolearnsimple.data.visualizer.BubbleSortVisualizer
 import com.ivaniuk.algolearnsimple.presentation.screens.VisualizationScreen
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.VisualizationViewModel
@@ -88,8 +90,8 @@ fun AppNavigation(
             val visualizer = when (algorithmId) {
                 1 -> BubbleSortVisualizer()
                 2 -> BinarySearchVisualizer()
-                //3 -> BubbleSortVisualizer()
-                //4 -> BubbleSortVisualizer()
+                3 -> QuickSortVisualizer()
+                4 -> DFSVisualizer()
                 else -> BubbleSortVisualizer()
             }
 
