@@ -1,11 +1,5 @@
 package com.ivaniuk.algolearnsimple.presentation.screens
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.core.tween
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,8 +15,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ivaniuk.algolearnsimple.domain.model.Speed
 import com.ivaniuk.algolearnsimple.presentation.components.ArrayVisualizer
-import com.ivaniuk.algolearnsimple.presentation.components.GraphLegend
 import com.ivaniuk.algolearnsimple.presentation.components.GraphVisualizer
+import com.ivaniuk.algolearnsimple.presentation.components.GraphLegend
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.VisualizationViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,6 +73,7 @@ fun VisualizationScreen(
                     viewModel.setStep(index)
                 }
             )
+
             if (isPlaying) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -114,22 +109,21 @@ fun VisualizationScreen(
             }
 
             if (currentStep != null) {
+                // ВИЗУАЛИЗАЦИЯ МАССИВА (если есть массив)
                 if (currentStep.array != null) {
                     val maxBarHeight = if (viewModel.getAlgorithmName() == "Binary Search") {
                         180.dp
                     } else {
                         200.dp
                     }
+
                     Card(
                         modifier = Modifier.fillMaxWidth()
-                    )
-
-                    {
+                    ) {
                         Column(
                             modifier = Modifier.padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
-                        )
-                        {
+                        ) {
                             ArrayVisualizer(
                                 array = currentStep.array,
                                 highlightedIndices = currentStep.highlightedIndices,
@@ -141,28 +135,6 @@ fun VisualizationScreen(
                                     .fillMaxWidth()
                                     .height(250.dp)
                             )
-                            if (currentStep.graph != null) {
-                                Card(
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Column(
-                                        modifier = Modifier.padding(16.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        GraphVisualizer(
-                                            graph = currentStep.graph,
-                                            highlightedNodes = currentStep.highlightedIndices,
-                                            currentNodes = currentStep.comparingIndices,
-                                            visitedNodes = currentStep.sortedIndices,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(300.dp)
-                                        )
-                                        Spacer(modifier = Modifier.height(8.dp))
-                                        GraphLegend(modifier = Modifier.fillMaxWidth())
-                                    }
-                                }
-                            }
                             Text(
                                 text = "Элементов: ${currentStep.array.size}",
                                 style = MaterialTheme.typography.labelSmall,
@@ -173,7 +145,48 @@ fun VisualizationScreen(
                     }
                 }
 
+                // ВИЗУАЛИЗАЦИЯ ГРАФА (если есть граф) - ОТДЕЛЬНЫЙ БЛОК
+                if (currentStep.graph != null) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Граф:",
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
 
+                            // ИСПОЛЬЗУЕМ GraphVisualizer из отдельного файла
+                            GraphVisualizer(
+                                graph = currentStep.graph,
+                                highlightedNodes = currentStep.highlightedIndices,
+                                currentNodes = currentStep.comparingIndices,
+                                visitedNodes = currentStep.sortedIndices,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(350.dp)
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            // ИСПОЛЬЗУЕМ GraphLegend из отдельного файла
+                            GraphLegend(modifier = Modifier.fillMaxWidth())
+
+                            Text(
+                                text = "Вершин: ${currentStep.graph.keys.size}, Рёбер: ${currentStep.graph.values.sumOf { it.size } / 2}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(top = 8.dp)
+                            )
+                        }
+                    }
+                }
+
+                // ОПИСАНИЕ ШАГА
                 Card(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -212,6 +225,7 @@ fun VisualizationScreen(
                     }
                 }
 
+                // ИНФОРМАЦИЯ О СКОРОСТИ
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -235,6 +249,7 @@ fun VisualizationScreen(
                     )
                 }
             } else {
+                // ИНДИКАТОР ЗАГРУЗКИ
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -252,6 +267,7 @@ fun VisualizationScreen(
                 }
             }
 
+            // ИНФОРМАЦИЯ ОБ АЛГОРИТМЕ
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -273,6 +289,23 @@ fun VisualizationScreen(
         }
     }
 }
+
+// УДАЛИТЕ ЭТИ ФУНКЦИИ - они объявлены в GraphVisualizer.kt
+// @Composable
+// fun SimpleGraphVisualizer(
+//     graph: Map<Int, List<Int>>,
+//     highlightedNodes: Set<Int>,
+//     visitedNodes: Set<Int>,
+//     currentNodes: Set<Int>,
+//     modifier: Modifier
+// ) {
+//     TODO("Not yet implemented")
+// }
+//
+// @Composable
+// fun GraphLegend(modifier: Modifier) {
+//     TODO("Not yet implemented")
+// }
 
 @Composable
 fun StepProgress(
