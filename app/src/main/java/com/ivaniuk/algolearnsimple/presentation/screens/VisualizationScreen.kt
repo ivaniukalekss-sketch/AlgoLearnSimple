@@ -109,7 +109,6 @@ fun VisualizationScreen(
             }
 
             if (currentStep != null) {
-                // ВИЗУАЛИЗАЦИЯ МАССИВА (если есть массив)
                 if (currentStep.array != null) {
                     val maxBarHeight = if (viewModel.getAlgorithmName() == "Binary Search") {
                         180.dp
@@ -133,7 +132,7 @@ fun VisualizationScreen(
                                 currentIndex = currentStep.currentIndex,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(250.dp)
+                                    .height(410.dp)
                             )
                             Text(
                                 text = "Элементов: ${currentStep.array.size}",
@@ -145,7 +144,6 @@ fun VisualizationScreen(
                     }
                 }
 
-                // ВИЗУАЛИЗАЦИЯ ГРАФА (если есть граф) - ОТДЕЛЬНЫЙ БЛОК
                 if (currentStep.graph != null) {
                     Card(
                         modifier = Modifier.fillMaxWidth()
@@ -160,7 +158,6 @@ fun VisualizationScreen(
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
 
-                            // ИСПОЛЬЗУЕМ GraphVisualizer из отдельного файла
                             GraphVisualizer(
                                 graph = currentStep.graph,
                                 highlightedNodes = currentStep.highlightedIndices,
@@ -173,7 +170,6 @@ fun VisualizationScreen(
 
                             Spacer(modifier = Modifier.height(8.dp))
 
-                            // ИСПОЛЬЗУЕМ GraphLegend из отдельного файла
                             GraphLegend(modifier = Modifier.fillMaxWidth())
 
                             Text(
@@ -186,7 +182,6 @@ fun VisualizationScreen(
                     }
                 }
 
-                // ОПИСАНИЕ ШАГА
                 Card(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -225,7 +220,6 @@ fun VisualizationScreen(
                     }
                 }
 
-                // ИНФОРМАЦИЯ О СКОРОСТИ
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -249,7 +243,6 @@ fun VisualizationScreen(
                     )
                 }
             } else {
-                // ИНДИКАТОР ЗАГРУЗКИ
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -267,7 +260,6 @@ fun VisualizationScreen(
                 }
             }
 
-            // ИНФОРМАЦИЯ ОБ АЛГОРИТМЕ
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -290,22 +282,6 @@ fun VisualizationScreen(
     }
 }
 
-// УДАЛИТЕ ЭТИ ФУНКЦИИ - они объявлены в GraphVisualizer.kt
-// @Composable
-// fun SimpleGraphVisualizer(
-//     graph: Map<Int, List<Int>>,
-//     highlightedNodes: Set<Int>,
-//     visitedNodes: Set<Int>,
-//     currentNodes: Set<Int>,
-//     modifier: Modifier
-// ) {
-//     TODO("Not yet implemented")
-// }
-//
-// @Composable
-// fun GraphLegend(modifier: Modifier) {
-//     TODO("Not yet implemented")
-// }
 
 @Composable
 fun StepProgress(
