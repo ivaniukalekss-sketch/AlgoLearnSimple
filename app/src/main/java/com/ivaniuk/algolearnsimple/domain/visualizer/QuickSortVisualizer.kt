@@ -1,4 +1,4 @@
-package com.ivaniuk.algolearnsimple.data.visualizer
+package com.ivaniuk.algolearnsimple.domain.visualizer
 
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmType
 import com.ivaniuk.algolearnsimple.domain.model.VisualizationStep
@@ -16,24 +16,21 @@ class QuickSortVisualizer : AlgorithmVisualizer {
         val steps = mutableListOf<VisualizationStep>()
         val mutableArray = array.toMutableList()
 
-        // Используем ArrayDeque вместо MutableList для стека
         fun partition(arr: MutableList<Int>, low: Int, high: Int, parentStack: ArrayDeque<Pair<Int, Int>>): Int {
             val pivot = arr[high]
             var i = low - 1
 
-            // Шаг: выбор опорного элемента
             steps.add(
                 VisualizationStep(
                     stepNumber = steps.size,
                     array = arr.toList(),
                     highlightedIndices = setOf(high),
-                    description = "📌 Выбираем опорный элемент (pivot): ${arr[high]} на позиции $high",
+                    description = "Выбираем опорный элемент (pivot): ${arr[high]} на позиции $high",
                     codeLine = "val pivot = arr[$high]"
                 )
             )
 
             for (j in low until high) {
-                // Шаг: сравнение с pivot
                 steps.add(
                     VisualizationStep(
                         stepNumber = steps.size,
@@ -47,7 +44,6 @@ class QuickSortVisualizer : AlgorithmVisualizer {
                 if (arr[j] < pivot) {
                     i++
 
-                    // Шаг: обмен элементов
                     if (i != j) {
                         steps.add(
                             VisualizationStep(
@@ -73,7 +69,6 @@ class QuickSortVisualizer : AlgorithmVisualizer {
                 }
             }
 
-            // Шаг: размещение pivot на правильной позиции
             if (i + 1 != high) {
                 steps.add(
                     VisualizationStep(
@@ -94,7 +89,7 @@ class QuickSortVisualizer : AlgorithmVisualizer {
                     array = arr.toList(),
                     highlightedIndices = setOf(i + 1),
                     sortedIndices = setOf(i + 1),
-                    description = "✅ Pivot $pivot теперь на позиции ${i + 1} (на своём месте)",
+                    description = "Pivot $pivot теперь на позиции ${i + 1} (на своём месте)",
                     codeLine = "return ${i + 1}  // позиция pivot"
                 )
             )
@@ -104,14 +99,14 @@ class QuickSortVisualizer : AlgorithmVisualizer {
 
         fun quickSort(arr: MutableList<Int>, low: Int, high: Int, stack: ArrayDeque<Pair<Int, Int>> = ArrayDeque()) {
             if (low < high) {
-                stack.addLast(low to high) // Используем addLast для ArrayDeque
+                stack.addLast(low to high)
 
                 steps.add(
                     VisualizationStep(
                         stepNumber = steps.size,
                         array = arr.toList(),
                         highlightedIndices = (low..high).toSet(),
-                        description = "🔍 Рекурсивный вызов: сортируем подмассив [$low, $high] (${arr.slice(low..high).joinToString()})",
+                        description = "Рекурсивный вызов: сортируем подмассив [$low, $high] (${arr.slice(low..high).joinToString()})",
                         codeLine = "quickSort(arr, $low, $high)"
                     )
                 )
@@ -123,7 +118,7 @@ class QuickSortVisualizer : AlgorithmVisualizer {
                         stepNumber = steps.size,
                         array = arr.toList(),
                         highlightedIndices = (low until pi).toSet(),
-                        description = "📊 Левый подмассив: [$low, ${pi - 1}]"
+                        description = "Левый подмассив: [$low, ${pi - 1}]"
                     )
                 )
                 quickSort(arr, low, pi - 1, stack)
@@ -133,42 +128,40 @@ class QuickSortVisualizer : AlgorithmVisualizer {
                         stepNumber = steps.size,
                         array = arr.toList(),
                         highlightedIndices = (pi + 1..high).toSet(),
-                        description = "📊 Правый подмассив: [${pi + 1}, $high]"
+                        description = "Правый подмассив: [${pi + 1}, $high]"
                     )
                 )
                 quickSort(arr, pi + 1, high, stack)
 
-                stack.removeLast() // Теперь работает корректно для ArrayDeque
+                stack.removeLast()
             } else if (low == high) {
                 steps.add(
                     VisualizationStep(
                         stepNumber = steps.size,
                         array = arr.toList(),
                         sortedIndices = setOf(low),
-                        description = "✅ Подмассив из одного элемента arr[$low] = ${arr[low]} уже отсортирован"
+                        description = "Подмассив из одного элемента arr[$low] = ${arr[low]} уже отсортирован"
                     )
                 )
             }
         }
 
-        // Начальный шаг
         steps.add(
             VisualizationStep(
                 stepNumber = 0,
                 array = mutableArray.toList(),
-                description = "🚀 Начинаем Quick Sort массива: ${mutableArray.joinToString()}"
+                description = "Начинаем Quick Sort массива: ${mutableArray.joinToString()}"
             )
         )
 
         quickSort(mutableArray, 0, mutableArray.size - 1)
 
-        // Финальный шаг
         steps.add(
             VisualizationStep(
                 stepNumber = steps.size,
                 array = mutableArray.toList(),
                 sortedIndices = mutableArray.indices.toSet(),
-                description = "🎉 Массив полностью отсортирован! Quick Sort завершён."
+                description = "Массив полностью отсортирован! Quick Sort завершён."
             )
         )
 

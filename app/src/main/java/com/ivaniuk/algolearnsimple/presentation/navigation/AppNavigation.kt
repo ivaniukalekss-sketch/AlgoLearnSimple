@@ -1,8 +1,8 @@
 package com.ivaniuk.algolearnsimple.presentation.navigation
 
-import com.ivaniuk.algolearnsimple.data.visualizer.QuickSortVisualizer
-import com.ivaniuk.algolearnsimple.data.visualizer.DFSVisualizer
-import com.ivaniuk.algolearnsimple.data.visualizer.BubbleSortVisualizer
+import com.ivaniuk.algolearnsimple.domain.visualizer.QuickSortVisualizer
+import com.ivaniuk.algolearnsimple.domain.visualizer.DFSVisualizer
+import com.ivaniuk.algolearnsimple.domain.visualizer.BubbleSortVisualizer
 import com.ivaniuk.algolearnsimple.presentation.screens.VisualizationScreen
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.VisualizationViewModel
 import androidx.compose.runtime.Composable
@@ -18,7 +18,7 @@ import com.ivaniuk.algolearnsimple.presentation.screens.FavoritesScreen
 import com.ivaniuk.algolearnsimple.presentation.screens.HomeScreen
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
-import com.ivaniuk.algolearnsimple.data.visualizer.BinarySearchVisualizer
+import com.ivaniuk.algolearnsimple.domain.visualizer.BinarySearchVisualizer
 
 @Composable
 fun AppNavigation(

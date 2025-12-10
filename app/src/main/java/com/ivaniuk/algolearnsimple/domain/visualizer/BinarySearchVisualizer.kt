@@ -1,4 +1,4 @@
-package com.ivaniuk.algolearnsimple.data.visualizer
+package com.ivaniuk.algolearnsimple.domain.visualizer
 
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmType
 import com.ivaniuk.algolearnsimple.domain.model.VisualizationStep
@@ -24,7 +24,7 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
             VisualizationStep(
                 stepNumber = stepCounter++,
                 array = array,
-                description = "🔍 Начинаем бинарный поиск элемента $target в отсортированном массиве из ${array.size} элементов"
+                description = "Начинаем бинарный поиск элемента $target в отсортированном массиве из ${array.size} элементов"
             )
         )
 
@@ -32,7 +32,6 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
         var right = array.size - 1
 
         while (left <= right) {
-            // Шаг 1: Вычисление середины
             val mid = left + (right - left) / 2
 
             steps.add(
@@ -44,7 +43,6 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
                 )
             )
 
-            // Шаг 2: Подсветка середины
             steps.add(
                 VisualizationStep(
                     stepNumber = stepCounter++,
@@ -56,7 +54,6 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
                 )
             )
 
-            // Шаг 3: Сравнение с искомым значением
             steps.add(
                 VisualizationStep(
                     stepNumber = stepCounter++,
@@ -69,24 +66,22 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
 
             when {
                 array[mid] == target -> {
-                    // Шаг 4: Найден!
                     steps.add(
                         VisualizationStep(
                             stepNumber = stepCounter++,
                             array = array,
                             highlightedIndices = setOf(mid),
-                            description = "🎯 ${array[mid]} == $target → Элемент найден!",
+                            description = " ${array[mid]} == $target → Элемент найден!",
                             codeLine = "if (arr[mid] == target) return mid"
                         )
                     )
 
-                    // Шаг 5: Финальная подсветка
                     steps.add(
                         VisualizationStep(
                             stepNumber = stepCounter,
                             array = array,
                             highlightedIndices = setOf(mid),
-                            description = "✅ Элемент $target найден на позиции $mid!",
+                            description = "Элемент $target найден на позиции $mid!",
                             codeLine = "return $mid  // успешный поиск"
                         )
                     )
@@ -95,7 +90,6 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
                 }
 
                 array[mid] < target -> {
-                    // Шаг 4: Ищем справа
                     steps.add(
                         VisualizationStep(
                             stepNumber = stepCounter++,
@@ -107,7 +101,6 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
                         )
                     )
 
-                    // Шаг 5: Обновление границы
                     val oldLeft = left
                     left = mid + 1
                     steps.add(
@@ -121,7 +114,6 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
                 }
 
                 else -> {
-                    // Шаг 4: Ищем слева
                     steps.add(
                         VisualizationStep(
                             stepNumber = stepCounter++,
@@ -133,7 +125,6 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
                         )
                     )
 
-                    // Шаг 5: Обновление границы
                     val oldRight = right
                     right = mid - 1
                     steps.add(
@@ -148,12 +139,11 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
             }
         }
 
-        // Элемент не найден
         steps.add(
             VisualizationStep(
                 stepNumber = stepCounter++,
                 array = array,
-                description = "❌ Элемент $target не найден в массиве",
+                description = " Элемент $target не найден в массиве",
                 codeLine = "return -1  // элемент не найден"
             )
         )

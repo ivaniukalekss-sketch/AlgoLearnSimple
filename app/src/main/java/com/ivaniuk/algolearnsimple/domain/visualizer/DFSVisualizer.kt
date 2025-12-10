@@ -1,4 +1,4 @@
-package com.ivaniuk.algolearnsimple.data.visualizer
+package com.ivaniuk.algolearnsimple.domain.visualizer
 
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmType
 import com.ivaniuk.algolearnsimple.domain.model.VisualizationStep
@@ -22,12 +22,11 @@ class DFSVisualizer : AlgorithmVisualizer {
 
         var stepCounter = 0
 
-        // Шаг 0: Инициализация
         steps.add(
             VisualizationStep(
                 stepNumber = stepCounter++,
                 graph = graph,
-                description = "🎯 Начинаем DFS в графе с вершины $startNode",
+                description = "Начинаем DFS в графе с вершины $startNode",
                 codeLine = "val stack = ArrayDeque<Int>(); stack.add($startNode)"
             )
         )
@@ -37,19 +36,17 @@ class DFSVisualizer : AlgorithmVisualizer {
         while (stack.isNotEmpty()) {
             val current = stack.removeLast()
 
-            // Шаг: обработка вершины
             steps.add(
                 VisualizationStep(
                     stepNumber = stepCounter++,
                     graph = graph,
                     currentIndex = current,
                     highlightedIndices = visited.toSet(),
-                    description = "📥 Извлекаем вершину $current из стека"
+                    description = "Извлекаем вершину $current из стека"
                 )
             )
 
             if (current !in visited) {
-                // Шаг: посещение вершины
                 visited.add(current)
                 steps.add(
                     VisualizationStep(
@@ -58,12 +55,11 @@ class DFSVisualizer : AlgorithmVisualizer {
                         currentIndex = current,
                         highlightedIndices = visited.toSet(),
                         sortedIndices = visited.toSet(),
-                        description = "✅ Посещаем вершину $current (добавляем в visited)",
+                        description = "Посещаем вершину $current (добавляем в visited)",
                         codeLine = "visited.add($current)"
                     )
                 )
 
-                // Получаем соседей
                 val neighbors = graph[current] ?: emptyList()
 
                 if (neighbors.isNotEmpty()) {
@@ -74,11 +70,10 @@ class DFSVisualizer : AlgorithmVisualizer {
                             currentIndex = current,
                             highlightedIndices = visited.toSet(),
                             comparingIndices = neighbors.toSet(),
-                            description = "🔍 Находим соседей вершины $current: ${neighbors.joinToString()}"
+                            description = "Находим соседей вершины $current: ${neighbors.joinToString()}"
                         )
                     )
 
-                    // Добавляем соседей в обратном порядке (для правильного порядка обхода)
                     neighbors.reversed().forEach { neighbor ->
                         if (neighbor !in visited) {
                             steps.add(
@@ -88,7 +83,7 @@ class DFSVisualizer : AlgorithmVisualizer {
                                     currentIndex = current,
                                     comparingIndices = setOf(neighbor),
                                     highlightedIndices = visited.toSet(),
-                                    description = "📤 Добавляем соседа $neighbor в стек (ещё не посещён)"
+                                    description = "Добавляем соседа $neighbor в стек (ещё не посещён)"
                                 )
                             )
                             stack.addLast(neighbor)
@@ -100,7 +95,7 @@ class DFSVisualizer : AlgorithmVisualizer {
                                     currentIndex = current,
                                     comparingIndices = setOf(neighbor),
                                     highlightedIndices = visited.toSet(),
-                                    description = "⏭️ Сосед $neighbor уже посещён - пропускаем"
+                                    description = "Сосед $neighbor уже посещён - пропускаем"
                                 )
                             )
                         }
@@ -112,7 +107,7 @@ class DFSVisualizer : AlgorithmVisualizer {
                             graph = graph,
                             currentIndex = current,
                             highlightedIndices = visited.toSet(),
-                            description = "🔚 Вершина $current не имеет соседей (висячая вершина)"
+                            description = "Вершина $current не имеет соседей (висячая вершина)"
                         )
                     )
                 }
@@ -123,33 +118,31 @@ class DFSVisualizer : AlgorithmVisualizer {
                         graph = graph,
                         currentIndex = current,
                         highlightedIndices = visited.toSet(),
-                        description = "⏭️ Вершина $current уже посещена - пропускаем"
+                        description = "Вершина $current уже посещена - пропускаем"
                     )
                 )
             }
 
-            // Шаг: состояние стека
             steps.add(
                 VisualizationStep(
                     stepNumber = stepCounter++,
                     graph = graph,
                     highlightedIndices = visited.toSet(),
                     description = if (stack.isNotEmpty()) {
-                        "📊 Текущее состояние стека (следующая вершина сверху): ${stack.joinToString()}"
+                        "Текущее состояние стека (следующая вершина сверху): ${stack.joinToString()}"
                     } else {
-                        "📊 Стек пуст - обход завершён"
+                        "Стек пуст - обход завершён"
                     }
                 )
             )
         }
 
-        // Финальный шаг
         steps.add(
             VisualizationStep(
                 stepNumber = stepCounter,
                 graph = graph,
                 sortedIndices = visited.toSet(),
-                description = "🎉 DFS завершён! Посещённые вершины в порядке обхода: ${visited.joinToString()}"
+                description = "DFS завершён! Посещённые вершины в порядке обхода: ${visited.joinToString()}"
             )
         )
 

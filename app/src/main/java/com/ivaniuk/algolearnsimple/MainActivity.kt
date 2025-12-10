@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AlgoLearnTheme {
-                AppNavigation(appContainer = AppContainer())
+                AppNavigation(appContainer = AppContainer(applicationContext))
             }
         }
     }

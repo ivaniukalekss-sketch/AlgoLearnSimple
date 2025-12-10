@@ -1,5 +1,7 @@
 package com.ivaniuk.algolearnsimple.data.repository
 
+import android.content.Context
+import com.ivaniuk.algolearnsimple.data.local.LocalStorage
 import com.ivaniuk.algolearnsimple.domain.model.Algorithm
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmCategory
 import com.ivaniuk.algolearnsimple.domain.repository.AlgorithmRepository
@@ -9,8 +11,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-class AlgorithmRepositoryImpl : AlgorithmRepository {
+class AlgorithmRepositoryImpl(
+    private val context: Context
+) : AlgorithmRepository {
 
+    private val localStorage = LocalStorage(context)
+
+    // Загружаем избранные ID из хранилища при создании
+    private val favoriteIds = localStorage.getFavorites().toMutableSet()
 
     private val initialAlgorithms = listOf(
         Algorithm(
@@ -40,7 +48,7 @@ class AlgorithmRepositoryImpl : AlgorithmRepository {
                 "Переходим к следующей паре",
                 "Повторяем до конца массива"
             ),
-            isFavorite = true
+            isFavorite = favoriteIds.contains(1) // Проверяем сохраненное состояние
         ),
         Algorithm(
             id = 2,
@@ -72,7 +80,7 @@ class AlgorithmRepositoryImpl : AlgorithmRepository {
                 "Если больше - ищем в правой половине",
                 "Повторяем пока не найдём элемент"
             ),
-            isFavorite = true
+            isFavorite = favoriteIds.contains(2)
         ),
         Algorithm(
             id = 3,
@@ -96,7 +104,7 @@ class AlgorithmRepositoryImpl : AlgorithmRepository {
                 "В правой - элементы больше опорного",
                 "Рекурсивно сортируем обе части"
             ),
-            isFavorite = false
+            isFavorite = favoriteIds.contains(3)
         ),
         Algorithm(
             id = 4,
@@ -131,10 +139,9 @@ class AlgorithmRepositoryImpl : AlgorithmRepository {
                 "Для каждой соседней вершины",
                 "Если не посещена - рекурсивно вызываем DFS"
             ),
-            isFavorite = true
+            isFavorite = favoriteIds.contains(4)
         )
     )
-
 
     private val _algorithms = MutableStateFlow(initialAlgorithms)
 
@@ -151,12 +158,28 @@ class AlgorithmRepositoryImpl : AlgorithmRepository {
         }
 
     override suspend fun toggleFavorite(algorithmId: Int) {
+        // Небольшая задержка для имитации реальной работы
         delay(50)
 
         _algorithms.update { currentAlgorithms ->
             currentAlgorithms.map { algorithm ->
                 if (algorithm.id == algorithmId) {
-                    algorithm.copy(isFavorite = !algorithm.isFavorite)
+                    val newFavoriteState = !algorithm.isFavorite
+
+                    // Обновляем локальное хранилище
+                    if (newFavoriteState) {
+                        favoriteIds.add(algorithmId)
+                    } else {
+                        favoriteIds.remove(algorithmId)
+                    }
+
+                    // Сохраняем изменения в SharedPreferences
+                    localStorage.saveFavorites(favoriteIds)
+
+                    println("Изменен алгоритм ID=$algorithmId: isFavorite=$newFavoriteState")
+                    println("Текущие избранные: $favoriteIds")
+
+                    algorithm.copy(isFavorite = newFavoriteState)
                 } else {
                     algorithm
                 }

@@ -1,4 +1,4 @@
-package com.ivaniuk.algolearnsimple.data.visualizer
+package com.ivaniuk.algolearnsimple.domain.visualizer
 
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmType
 import com.ivaniuk.algolearnsimple.domain.model.VisualizationStep
@@ -17,7 +17,6 @@ class BubbleSortVisualizer : AlgorithmVisualizer {
         val mutableArray = array.toMutableList()
         val n = mutableArray.size
 
-        // Шаг 0: Исходный массив
         steps.add(
             VisualizationStep(
                 stepNumber = 0,
@@ -29,7 +28,6 @@ class BubbleSortVisualizer : AlgorithmVisualizer {
         var stepCounter = 1
 
         for (i in 0 until n - 1) {
-            // Шаг: Начало нового прохода
             steps.add(
                 VisualizationStep(
                     stepNumber = stepCounter++,
@@ -39,7 +37,6 @@ class BubbleSortVisualizer : AlgorithmVisualizer {
             )
 
             for (j in 0 until n - i - 1) {
-                // Шаг 1: Подсветка элементов для сравнения
                 steps.add(
                     VisualizationStep(
                         stepNumber = stepCounter++,
@@ -52,24 +49,21 @@ class BubbleSortVisualizer : AlgorithmVisualizer {
                 )
 
                 if (mutableArray[j] > mutableArray[j + 1]) {
-                    // Шаг 2: Подготовка к обмену (подсветка красным)
                     steps.add(
                         VisualizationStep(
                             stepNumber = stepCounter++,
                             array = mutableArray.toList(),
                             comparingIndices = setOf(j, j + 1),
-                            swappedIndices = setOf(j, j + 1), // Оба красные
+                            swappedIndices = setOf(j, j + 1),
                             sortedIndices = (n - i until n).toSet(),
                             description = "${mutableArray[j]} > ${mutableArray[j + 1]} → готовимся к обмену"
                         )
                     )
 
-                    // Обмен значений
                     val temp = mutableArray[j]
                     mutableArray[j] = mutableArray[j + 1]
                     mutableArray[j + 1] = temp
 
-                    // Шаг 3: После обмена (один элемент переместился)
                     steps.add(
                         VisualizationStep(
                             stepNumber = stepCounter++,
@@ -81,7 +75,6 @@ class BubbleSortVisualizer : AlgorithmVisualizer {
                         )
                     )
 
-                    // Шаг 4: Завершение обмена (сброс цветов)
                     steps.add(
                         VisualizationStep(
                             stepNumber = stepCounter++,
@@ -91,7 +84,6 @@ class BubbleSortVisualizer : AlgorithmVisualizer {
                         )
                     )
                 } else {
-                    // Шаг 2а: Элементы в правильном порядке
                     steps.add(
                         VisualizationStep(
                             stepNumber = stepCounter++,
@@ -104,7 +96,6 @@ class BubbleSortVisualizer : AlgorithmVisualizer {
                 }
             }
 
-            // Шаг: Элемент на своём месте
             steps.add(
                 VisualizationStep(
                     stepNumber = stepCounter++,
@@ -115,13 +106,12 @@ class BubbleSortVisualizer : AlgorithmVisualizer {
             )
         }
 
-        // Финальный шаг: Весь массив отсортирован
         steps.add(
             VisualizationStep(
                 stepNumber = stepCounter,
                 array = mutableArray.toList(),
                 sortedIndices = mutableArray.indices.toSet(),
-                description = "✅ Массив полностью отсортирован!"
+                description = "Массив полностью отсортирован!"
             )
         )
 
