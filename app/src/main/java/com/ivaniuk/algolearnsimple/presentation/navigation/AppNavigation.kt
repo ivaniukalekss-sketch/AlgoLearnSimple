@@ -66,6 +66,11 @@ fun AppNavigation(
                             viewModel.toggleFavorite(it)
                         }
                     }
+                },
+                onVisualizeClick = {
+                    algorithmId?.let {
+                        navController.navigate("visualization/$it")
+                    }
                 }
             )
         }

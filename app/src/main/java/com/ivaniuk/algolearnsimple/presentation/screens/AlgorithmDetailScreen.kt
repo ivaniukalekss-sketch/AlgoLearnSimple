@@ -12,9 +12,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,7 +38,8 @@ import com.ivaniuk.algolearnsimple.domain.model.Algorithm
 fun AlgorithmDetailScreen(
     algorithm: Algorithm?,
     onBack: () -> Unit,
-    onToggleFavorite: () -> Unit
+    onToggleFavorite: () -> Unit,
+    onVisualizeClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -48,6 +51,18 @@ fun AlgorithmDetailScreen(
                     }
                 },
                 actions = {
+                    if (algorithm != null) {
+                        IconButton(
+                            onClick = onVisualizeClick,
+                            modifier = Modifier.padding(end = 8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.PlayCircleOutline,
+                                contentDescription = "Запустить визуализацию",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
                     if (algorithm != null) {
                         IconButton(onClick = onToggleFavorite) {
                             Icon(
@@ -178,6 +193,81 @@ fun AlgorithmDetailScreen(
                         fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
                     )
                 }
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = "Что означает ${algorithm.complexity}?",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        val explanation = when (algorithm.complexity) {
+                            "O(n²)" -> """
+                Квадратичная сложность означает, что при увеличении размера данных в 10 раз,
+                время работы увеличится примерно в 100 раз.
+                
+                 Пример: 
+                • n = 10 → ~100 операций
+                • n = 100 → ~10,000 операций
+                • n = 1000 → ~1,000,000 операций
+                
+                 Используйте только для маленьких данных!
+            """.trimIndent()
+
+                            "O(log n)" -> """
+                Логарифмическая сложность - очень эффективна!
+                При увеличении данных в 1000 раз, время увеличится всего в 10 раз.
+                
+                 Пример:
+                • n = 10 → ~3 операции
+                • n = 100 → ~7 операций
+                • n = 1,000,000 → ~20 операций
+                
+                 Идеально для поиска в больших данных!
+            """.trimIndent()
+
+                            "O(n log n)" -> """
+                Линейно-логарифмическая сложность - оптимальна для сортировки.
+                Хорошо масштабируется на большие объёмы данных.
+                
+                 Пример:
+                • n = 10 → ~30 операций
+                • n = 100 → ~700 операций
+                • n = 1000 → ~10,000 операций
+                
+                 Стандарт для алгоритмов сортировки!
+            """.trimIndent()
+
+                            "O(V + E)" -> """
+                Линейная сложность для графов.
+                Зависит от количества вершин (V) и рёбер (E).
+                
+                 Пример:
+                • 10 вершин, 15 рёбер → ~25 операций
+                • 100 вершин, 200 рёбер → ~300 операций
+                
+                 Время растёт пропорционально размеру графа.
+            """.trimIndent()
+
+                            else -> "Стандартная сложность алгоритма."
+                        }
+
+                        Text(
+                            text = explanation,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+
             }
         }
     }
