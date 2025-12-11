@@ -3,6 +3,7 @@ package com.ivaniuk.algolearnsimple.domain.visualizer
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmType
 import com.ivaniuk.algolearnsimple.domain.model.VisualizationStep
 import com.ivaniuk.algolearnsimple.domain.repository.AlgorithmVisualizer
+import com.ivaniuk.algolearnsimple.domain.util.DataGenerator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -10,6 +11,10 @@ class DijkstraVisualizer : AlgorithmVisualizer {
     override val algorithmId: Int = 5
     override val algorithmName: String = "Dijkstra's Algorithm"
     override val algorithmType: AlgorithmType = AlgorithmType.GRAPH_TRAVERSAL
+
+    override fun generateRandomInput(): Any {
+        return DataGenerator.generateWeightedGraph()
+    }
 
     override fun visualize(input: Any): Flow<List<VisualizationStep>> = flow {
         val data = input as? Triple<Map<Int, List<Pair<Int, Int>>>, Int, Int>

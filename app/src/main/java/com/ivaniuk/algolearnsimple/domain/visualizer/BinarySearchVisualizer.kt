@@ -3,6 +3,7 @@ package com.ivaniuk.algolearnsimple.domain.visualizer
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmType
 import com.ivaniuk.algolearnsimple.domain.model.VisualizationStep
 import com.ivaniuk.algolearnsimple.domain.repository.AlgorithmVisualizer
+import com.ivaniuk.algolearnsimple.domain.util.DataGenerator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -10,6 +11,10 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
     override val algorithmId: Int = 2
     override val algorithmName: String = "Binary Search"
     override val algorithmType: AlgorithmType = AlgorithmType.SEARCHING_ARRAY
+
+    override fun generateRandomInput(): Any {
+        return DataGenerator.generateBinarySearchData()
+    }
 
     override fun visualize(input: Any): Flow<List<VisualizationStep>> = flow {
         val data = input as? Pair<List<Int>, Int> ?: getDefaultInput() as Pair<List<Int>, Int>

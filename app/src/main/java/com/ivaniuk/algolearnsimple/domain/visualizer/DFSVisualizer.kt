@@ -3,6 +3,7 @@ package com.ivaniuk.algolearnsimple.domain.visualizer
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmType
 import com.ivaniuk.algolearnsimple.domain.model.VisualizationStep
 import com.ivaniuk.algolearnsimple.domain.repository.AlgorithmVisualizer
+import com.ivaniuk.algolearnsimple.domain.util.DataGenerator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -10,6 +11,12 @@ class DFSVisualizer : AlgorithmVisualizer {
     override val algorithmId: Int = 4
     override val algorithmName: String = "DFS (Depth-First Search)"
     override val algorithmType: AlgorithmType = AlgorithmType.GRAPH_TRAVERSAL
+
+    override fun generateRandomInput(): Any {
+        val graph = DataGenerator.generateRandomGraph()
+        val startNode = 0
+        return Pair(graph, startNode)
+    }
 
     override fun visualize(input: Any): Flow<List<VisualizationStep>> = flow {
         val data = input as? Pair<Map<Int, List<Int>>, Int> ?: getDefaultInput() as Pair<Map<Int, List<Int>>, Int>

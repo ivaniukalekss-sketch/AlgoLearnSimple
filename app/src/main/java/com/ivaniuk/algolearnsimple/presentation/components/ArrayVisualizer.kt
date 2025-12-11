@@ -34,7 +34,7 @@ fun ArrayVisualizer(
     modifier: Modifier = Modifier
 ) {
     val maxValue = if (array.isNotEmpty()) array.maxOrNull() ?: 1 else 1
-    val maxBarHeight = 180.dp
+    val maxBarHeight = 220.dp
 
     // Определяем размер текста на основе количества элементов
     val valueTextSize = when {
@@ -64,7 +64,7 @@ fun ArrayVisualizer(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(240.dp) // Увеличили высоту
+                .height(260.dp) // Увеличили высоту
                 .padding(bottom = 12.dp),
             contentAlignment = Alignment.BottomCenter
         ) {

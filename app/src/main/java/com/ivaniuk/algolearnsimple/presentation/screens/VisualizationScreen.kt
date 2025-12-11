@@ -31,6 +31,7 @@ fun VisualizationScreen(
     val currentStepIndex by viewModel.currentStepIndex.collectAsState()
     val isPlaying by viewModel.isPlaying.collectAsState()
     val speed by viewModel.speed.collectAsState()
+    val isRandomData by viewModel.isRandomData.collectAsState()
 
     val currentStep = viewModel.getCurrentStep()
     LaunchedEffect(isPlaying, currentStepIndex) {
@@ -50,6 +51,18 @@ fun VisualizationScreen(
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
                     }
+                },
+                actions = {
+                    // Кнопка для случайных данных
+                    IconButton(
+                        onClick = { viewModel.generateRandomData() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Casino,
+                            contentDescription = "Случайные данные",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
             )
         },
@@ -68,6 +81,34 @@ fun VisualizationScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            if (isRandomData) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "🎲 Используются случайные данные",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+
+                        TextButton(
+                            onClick = { viewModel.resetToDefaultData() }
+                        ) {
+                            Text("Сбросить")
+                        }
+                    }
+                }
+            }
             StepProgress(
                 currentStep = currentStepIndex,
                 totalSteps = steps.size,
@@ -113,9 +154,9 @@ fun VisualizationScreen(
             if (currentStep != null) {
                 if (currentStep.array != null) {
                     val maxBarHeight = if (viewModel.getAlgorithmName() == "Binary Search") {
-                        180.dp
-                    } else {
                         200.dp
+                    } else {
+                        220.dp
                     }
 
                     Card(
@@ -134,7 +175,7 @@ fun VisualizationScreen(
                                 currentIndex = currentStep.currentIndex,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(410.dp)
+                                    .height(430.dp)
                             )
                             Text(
                                 text = "Элементов: ${currentStep.array.size}",
@@ -191,9 +232,10 @@ fun VisualizationScreen(
                                     highlightedEdges = highlightedEdges,
                                     startNode = startNode,
                                     targetNode = targetNode,
+                                    showLegend = true,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(350.dp)
+                                        .height(450.dp)
                                 )
                             } else {
                                 // Для других алгоритмов - обычный GraphVisualizer
@@ -206,17 +248,14 @@ fun VisualizationScreen(
                                         .fillMaxWidth()
                                         .height(350.dp)
                                 )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                GraphLegend(modifier = Modifier.fillMaxWidth())
                             }
                             // === КОНЕЦ ИЗМЕНЕНИЙ ===
 
                             Spacer(modifier = Modifier.height(8.dp))
 
-                            // Легенда в зависимости от алгоритма
-                            if (viewModel.getAlgorithmName() == "Dijkstra's Algorithm") {
-                                WeightedGraphLegend(modifier = Modifier.fillMaxWidth())
-                            } else {
-                                GraphLegend(modifier = Modifier.fillMaxWidth())
-                            }
+
 
                             Text(
                                 text = "Вершин: ${currentStep.graph.keys.size}, Рёбер: ${currentStep.graph.values.sumOf { it.size } / 2}",

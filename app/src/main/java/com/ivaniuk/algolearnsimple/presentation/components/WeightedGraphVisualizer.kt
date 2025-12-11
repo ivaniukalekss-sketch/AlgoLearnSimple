@@ -119,8 +119,7 @@ fun WeightedGraphVisualizer(
                                 )
 
                                 // Рисуем вес ребра
-                                val weight = edgeWeights[Pair(nodeId, neighborId)] ?:
-                                edgeWeights[Pair(neighborId, nodeId)]
+                                val weight = edgeWeights[Pair(nodeId, neighborId)]
                                 if (weight != null) {
                                     drawEdgeWeight(
                                         from = source.position,

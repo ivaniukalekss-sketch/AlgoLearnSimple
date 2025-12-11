@@ -12,4 +12,6 @@ interface AlgorithmVisualizer {
     fun visualize(input: Any): Flow<List<VisualizationStep>>
     fun getDefaultInput(): Any
     fun getInputDescription(): String
+
+    fun generateRandomInput(): Any
 }

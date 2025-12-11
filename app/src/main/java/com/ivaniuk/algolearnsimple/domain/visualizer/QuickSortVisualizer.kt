@@ -3,6 +3,7 @@ package com.ivaniuk.algolearnsimple.domain.visualizer
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmType
 import com.ivaniuk.algolearnsimple.domain.model.VisualizationStep
 import com.ivaniuk.algolearnsimple.domain.repository.AlgorithmVisualizer
+import com.ivaniuk.algolearnsimple.domain.util.DataGenerator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -10,6 +11,10 @@ class QuickSortVisualizer : AlgorithmVisualizer {
     override val algorithmId: Int = 3
     override val algorithmName: String = "Quick Sort"
     override val algorithmType: AlgorithmType = AlgorithmType.SORTING_ARRAY
+
+    override fun generateRandomInput(): Any {
+        return DataGenerator.generateRandomArray()
+    }
 
     override fun visualize(input: Any): Flow<List<VisualizationStep>> = flow {
         val array = input as? List<Int> ?: getDefaultInput() as List<Int>
