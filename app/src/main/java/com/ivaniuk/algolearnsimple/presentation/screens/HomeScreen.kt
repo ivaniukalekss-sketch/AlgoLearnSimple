@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ivaniuk.algolearnsimple.presentation.components.AlgorithmCard
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.HomeViewModel
+import androidx.compose.material.icons.filled.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,7 +34,8 @@ fun HomeScreen(
     onAlgorithmClick: (Int) -> Unit,
     onToggleFavorite: (Int) -> Unit,
     onFavoritesClick: () -> Unit,
-    onVisualizeClick: (Int) -> Unit
+    onVisualizeClick: (Int) -> Unit,
+    onStatisticsClick: () -> Unit
 ) {
     val algorithms by viewModel.algorithms.collectAsState()
     var searchText by remember { mutableStateOf("") }
@@ -59,6 +61,14 @@ fun HomeScreen(
                         )
                     },
                     actions = {
+                        // Кнопка статистики
+                        IconButton(onClick = onStatisticsClick) {
+                            Icon(
+                                imageVector = Icons.Default.BarChart,
+                                contentDescription = "Статистика"
+                            )
+                        }
+                        // Кнопка избранного
                         IconButton(onClick = onFavoritesClick) {
                             Icon(
                                 imageVector = Icons.Default.Favorite,
