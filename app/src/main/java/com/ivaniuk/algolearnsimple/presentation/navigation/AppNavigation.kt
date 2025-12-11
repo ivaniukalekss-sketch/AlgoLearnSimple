@@ -3,6 +3,7 @@ package com.ivaniuk.algolearnsimple.presentation.navigation
 import com.ivaniuk.algolearnsimple.domain.visualizer.QuickSortVisualizer
 import com.ivaniuk.algolearnsimple.domain.visualizer.DFSVisualizer
 import com.ivaniuk.algolearnsimple.domain.visualizer.BubbleSortVisualizer
+import com.ivaniuk.algolearnsimple.domain.visualizer.DijkstraVisualizer
 import com.ivaniuk.algolearnsimple.presentation.screens.VisualizationScreen
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.VisualizationViewModel
 import androidx.compose.runtime.Composable
@@ -97,6 +98,7 @@ fun AppNavigation(
                 2 -> BinarySearchVisualizer()
                 3 -> QuickSortVisualizer()
                 4 -> DFSVisualizer()
+                5 -> DijkstraVisualizer()
                 else -> BubbleSortVisualizer()
             }
 

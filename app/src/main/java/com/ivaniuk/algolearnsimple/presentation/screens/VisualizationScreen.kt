@@ -18,6 +18,8 @@ import com.ivaniuk.algolearnsimple.presentation.components.ArrayVisualizer
 import com.ivaniuk.algolearnsimple.presentation.components.GraphVisualizer
 import com.ivaniuk.algolearnsimple.presentation.components.GraphLegend
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.VisualizationViewModel
+import com.ivaniuk.algolearnsimple.presentation.components.WeightedGraphVisualizer
+import com.ivaniuk.algolearnsimple.presentation.components.WeightedGraphLegend
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -153,24 +155,68 @@ fun VisualizationScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Граф:",
+                                text = if (viewModel.getAlgorithmName() == "Dijkstra's Algorithm") {
+                                    "Взвешенный граф (Дейкстра)"
+                                } else {
+                                    "Граф"
+                                },
                                 style = MaterialTheme.typography.titleMedium,
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
 
-                            GraphVisualizer(
-                                graph = currentStep.graph,
-                                highlightedNodes = currentStep.highlightedIndices,
-                                currentNodes = currentStep.comparingIndices,
-                                visitedNodes = currentStep.sortedIndices,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(350.dp)
-                            )
+                            // === НАЧАЛО ИЗМЕНЕНИЙ ===
+                            // Определяем, какой визуализатор использовать
+                            val isDijkstra = viewModel.getAlgorithmName() == "Dijkstra's Algorithm"
+
+                            if (isDijkstra) {
+                                // Для Дейкстры получаем дополнительные данные
+                                val customData = currentStep.customData ?: emptyMap()
+                                val edgeWeights = customData["edgeWeights"] as? Map<Pair<Int, Int>, Int> ?: emptyMap()
+                                val nodeDistances = customData["nodeDistances"] as? Map<Int, String> ?: emptyMap()
+                                val startNode = customData["startNode"] as? Int
+                                val targetNode = customData["targetNode"] as? Int
+                                val visitedNodes = customData["visitedNodes"] as? Set<Int> ?: emptySet()
+                                val pathNodes = customData["pathNodes"] as? Set<Int> ?: emptySet()
+                                val comparingNodes = customData["comparingNodes"] as? Set<Int> ?: emptySet()
+                                val currentNode = customData["currentNode"] as? Int
+                                val highlightedEdges = customData["highlightedEdges"] as? Set<Pair<Int, Int>> ?: emptySet()
+
+                                // Используем WeightedGraphVisualizer
+                                WeightedGraphVisualizer(
+                                    graph = currentStep.graph,
+                                    edgeWeights = edgeWeights,
+                                    currentNodes = setOfNotNull(currentNode),
+                                    visitedNodes = visitedNodes,
+                                    highlightedNodes = comparingNodes,
+                                    highlightedEdges = highlightedEdges,
+                                    startNode = startNode,
+                                    targetNode = targetNode,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(350.dp)
+                                )
+                            } else {
+                                // Для других алгоритмов - обычный GraphVisualizer
+                                GraphVisualizer(
+                                    graph = currentStep.graph,
+                                    highlightedNodes = currentStep.highlightedIndices,
+                                    currentNodes = currentStep.comparingIndices,
+                                    visitedNodes = currentStep.sortedIndices,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(350.dp)
+                                )
+                            }
+                            // === КОНЕЦ ИЗМЕНЕНИЙ ===
 
                             Spacer(modifier = Modifier.height(8.dp))
 
-                            GraphLegend(modifier = Modifier.fillMaxWidth())
+                            // Легенда в зависимости от алгоритма
+                            if (viewModel.getAlgorithmName() == "Dijkstra's Algorithm") {
+                                WeightedGraphLegend(modifier = Modifier.fillMaxWidth())
+                            } else {
+                                GraphLegend(modifier = Modifier.fillMaxWidth())
+                            }
 
                             Text(
                                 text = "Вершин: ${currentStep.graph.keys.size}, Рёбер: ${currentStep.graph.values.sumOf { it.size } / 2}",

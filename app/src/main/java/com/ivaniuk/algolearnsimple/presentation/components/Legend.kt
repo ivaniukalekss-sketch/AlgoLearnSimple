@@ -120,5 +120,7 @@ private fun SingleLegendItem(item: LegendItem) {
 
 data class LegendItem(
     val color: Color,
-    val label: String
+    val label: String,
+    val showCircle: Boolean = true,
+    val showLine: Boolean = false
 )

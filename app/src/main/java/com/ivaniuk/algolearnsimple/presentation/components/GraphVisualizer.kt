@@ -76,9 +76,9 @@ fun GraphVisualizer(
                     val centerY = canvasHeight / 2
 
                     val minSide = min(canvasWidth, canvasHeight)
-                    val radius = minSide * 0.35f
+                    val radius = minSide * 0.40f
 
-                    val nodeRadius = min(25f, radius * 0.15f)
+                    val nodeRadius = min(30f, radius * 0.18f)
 
                     return nodes.mapIndexed { index, nodeId ->
                         val angle = 2 * PI * index / nodes.size

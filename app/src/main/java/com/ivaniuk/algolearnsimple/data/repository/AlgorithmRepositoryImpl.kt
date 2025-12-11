@@ -140,6 +140,63 @@ class AlgorithmRepositoryImpl(
                 "Если не посещена - рекурсивно вызываем DFS"
             ),
             isFavorite = favoriteIds.contains(4)
+        ),
+        Algorithm(
+            id = 5,
+            title = "Dijkstra's Algorithm",
+            description = "Алгоритм поиска кратчайшего пути от одной вершины до всех остальных в взвешенном графе с неотрицательными весами рёбер. Использует жадную стратегию, выбирая на каждом шаге вершину с минимальным расстоянием.",
+            category = AlgorithmCategory.GRAPH,
+            complexity = "O(V²) или O(E + V log V) с приоритетной очередью",
+            codeExample = """
+        fun dijkstra(graph: Map<Int, List<Pair<Int, Int>>>, start: Int): Map<Int, Int> {
+            // Расстояния от стартовой вершины до всех остальных
+            val distances = mutableMapOf<Int, Int>()
+            val visited = mutableSetOf<Int>()
+            val priorityQueue = PriorityQueue<Pair<Int, Int>>(compareBy { it.second })
+            
+            // Инициализируем расстояния
+            graph.keys.forEach { vertex ->
+                distances[vertex] = if (vertex == start) 0 else Int.MAX_VALUE
+            }
+            
+            priorityQueue.add(start to 0)
+            
+            while (priorityQueue.isNotEmpty()) {
+                val (currentVertex, currentDistance) = priorityQueue.poll()
+                
+                if (currentVertex in visited) continue
+                visited.add(currentVertex)
+                
+                graph[currentVertex]?.forEach { (neighbor, weight) ->
+                    val newDistance = currentDistance + weight
+                    
+                    if (newDistance < distances[neighbor]!!) {
+                        distances[neighbor] = newDistance
+                        priorityQueue.add(neighbor to newDistance)
+                    }
+                }
+            }
+            
+            return distances
+        }
+        
+        // Пример графа в виде списка смежности с весами
+        // 0 -> [(1, 4), (2, 1)]
+        // 1 -> [(3, 1)]
+        // 2 -> [(1, 2), (3, 5)]
+        // 3 -> []
+    """.trimIndent(),
+            steps = listOf(
+                "Инициализируем расстояния: 0 для стартовой вершины, ∞ для остальных",
+                "Создаём приоритетную очередь и добавляем стартовую вершину",
+                "Пока очередь не пуста, извлекаем вершину с минимальным расстоянием",
+                "Помечаем вершину как посещённую",
+                "Для каждого соседа текущей вершины вычисляем новое расстояние",
+                "Если новое расстояние меньше известного - обновляем",
+                "Добавляем соседа в приоритетную очередь с обновлённым расстоянием",
+                "Повторяем до тех пор, пока не посетим все достижимые вершины"
+            ),
+            isFavorite = favoriteIds.contains(5)
         )
     )
 
