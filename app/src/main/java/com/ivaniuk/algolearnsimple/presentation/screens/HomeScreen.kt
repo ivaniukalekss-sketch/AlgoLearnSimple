@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ivaniuk.algolearnsimple.presentation.components.AlgorithmCard
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.HomeViewModel
-import androidx.compose.material.icons.filled.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

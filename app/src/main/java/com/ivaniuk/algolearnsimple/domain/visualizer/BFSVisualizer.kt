@@ -1,9 +1,9 @@
 package com.ivaniuk.algolearnsimple.domain.visualizer
 
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmType
+import com.ivaniuk.algolearnsimple.domain.model.DataGenerator
 import com.ivaniuk.algolearnsimple.domain.model.VisualizationStep
 import com.ivaniuk.algolearnsimple.domain.repository.AlgorithmVisualizer
-import com.ivaniuk.algolearnsimple.domain.util.DataGenerator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -19,7 +19,17 @@ class BFSVisualizer : AlgorithmVisualizer {
     }
 
     override fun visualize(input: Any): Flow<List<VisualizationStep>> = flow {
-        val data = input as? Pair<Map<Int, List<Int>>, Int> ?: getDefaultInput() as Pair<Map<Int, List<Int>>, Int>
+        val data = when {
+            input is Pair<*, *> &&
+                    input.first is Map<*, *> &&
+                    input.second is Int -> {
+                val map = convertToGraph(input.first as Map<*, *>)
+                val start = input.second as Int
+                Pair(map, start)
+            }
+            else -> getDefaultInput()
+        }
+
         val graph = data.first
         val startNode = data.second
 
@@ -156,7 +166,7 @@ class BFSVisualizer : AlgorithmVisualizer {
         emit(steps)
     }
 
-    override fun getDefaultInput(): Any {
+    override fun getDefaultInput(): Pair<Map<Int, List<Int>>, Int> {
         val graph = mapOf(
             0 to listOf(1, 2, 3),
             1 to listOf(0, 4, 5),
@@ -173,5 +183,22 @@ class BFSVisualizer : AlgorithmVisualizer {
 
     override fun getInputDescription(): String {
         return "Граф в виде списка смежности и стартовая вершина"
+    }
+
+    private fun convertToGraph(input: Map<*, *>): Map<Int, List<Int>> {
+        return input.mapNotNull { (key, value) ->
+            val nodeId = when (key) {
+                is Int -> key
+                is Number -> key.toInt()
+                else -> return@mapNotNull null
+            }
+
+            val neighbors = when (value) {
+                is List<*> -> value.filterIsInstance<Int>()
+                else -> emptyList<Int>()
+            }
+
+            nodeId to neighbors
+        }.toMap()
     }
 }

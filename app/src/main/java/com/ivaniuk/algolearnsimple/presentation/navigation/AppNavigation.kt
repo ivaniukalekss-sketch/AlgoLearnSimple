@@ -29,10 +29,6 @@ fun AppNavigation(
     val navController = rememberNavController()
     val viewModel = HomeViewModel(appContainer.algorithmRepository)
     val coroutineScope = rememberCoroutineScope()
-    val homeViewModel = HomeViewModel(
-        appContainer.algorithmRepository
-    )
-
 
     NavHost(
         navController = navController,
@@ -53,7 +49,6 @@ fun AppNavigation(
                     navController.navigate("favorites")
                 },
                 onVisualizeClick = { algorithmId ->
-                    // ЗДЕСЬ ОСНОВНАЯ ПРОБЛЕМА - навигация на visualization
                     navController.navigate("visualization/$algorithmId")
                 },
             )

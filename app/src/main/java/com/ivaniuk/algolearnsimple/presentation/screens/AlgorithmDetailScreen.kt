@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -47,7 +47,11 @@ fun AlgorithmDetailScreen(
                 title = { Text(algorithm?.title ?: "Детали алгоритма") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
+                        // Исправленная иконка с AutoMirrored
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад"
+                        )
                     }
                 },
                 actions = {
@@ -193,6 +197,7 @@ fun AlgorithmDetailScreen(
                         fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
                     )
                 }
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -251,23 +256,13 @@ fun AlgorithmDetailScreen(
                 Линейная сложность для графов.
                 Зависит от количества вершин (V) и рёбер (E).
                 
-                 Пример:
+                Пример:
                 • 10 вершин, 15 рёбер → ~25 операций
                 • 100 вершин, 200 рёбер → ~300 операций
+                • 1000 вершин, 3000 рёбер → ~4000 операций
                 
-                 Время растёт пропорционально размеру графа.
+                Время растёт пропорционально размеру графа.
             """.trimIndent()
-                            "O(V + E)" -> """
-        Линейная сложность для графов.
-        Зависит от количества вершин (V) и рёбер (E).
-        
-        Пример:
-        • 10 вершин, 15 рёбер → ~25 операций
-        • 100 вершин, 200 рёбер → ~300 операций
-        • 1000 вершин, 3000 рёбер → ~4000 операций
-        
-        Время растёт пропорционально размеру графа.
-    """.trimIndent()
 
                             else -> "Стандартная сложность алгоритма."
                         }
@@ -278,7 +273,6 @@ fun AlgorithmDetailScreen(
                         )
                     }
                 }
-
             }
         }
     }

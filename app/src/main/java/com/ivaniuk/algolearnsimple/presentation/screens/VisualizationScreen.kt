@@ -1,11 +1,11 @@
 package com.ivaniuk.algolearnsimple.presentation.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,13 +19,7 @@ import com.ivaniuk.algolearnsimple.presentation.components.ArrayVisualizer
 import com.ivaniuk.algolearnsimple.presentation.components.GraphVisualizer
 import com.ivaniuk.algolearnsimple.presentation.components.GraphLegend
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.VisualizationViewModel
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.draw.clip
-import androidx.compose.foundation.border
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +49,11 @@ fun VisualizationScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
+                        // Исправленная иконка
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад"
+                        )
                     }
                 },
                 actions = {
@@ -102,7 +100,7 @@ fun VisualizationScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "🎲 Используются случайные данные",
+                            text = "Используются случайные данные",
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
@@ -159,11 +157,6 @@ fun VisualizationScreen(
 
             if (currentStep != null) {
                 if (currentStep.array != null) {
-                    val maxBarHeight = if (viewModel.getAlgorithmName() == "Binary Search") {
-                        200.dp
-                    } else {
-                        220.dp
-                    }
 
                     Card(
                         modifier = Modifier.fillMaxWidth()
@@ -225,10 +218,8 @@ fun VisualizationScreen(
 
                             Spacer(modifier = Modifier.height(8.dp))
 
-                            // Легенда с пояснениями цветов
                             GraphLegend(modifier = Modifier.fillMaxWidth())
 
-                            // Статистика графа
                             val edgeCount = currentStep.graph.values.sumOf { it.size } / 2
                             Text(
                                 text = "Вершин: ${currentStep.graph.keys.size}, Рёбер: $edgeCount",
@@ -237,7 +228,6 @@ fun VisualizationScreen(
                                 modifier = Modifier.padding(top = 8.dp)
                             )
 
-                            // Дополнительная информация для BFS
                             if (viewModel.getAlgorithmName() == "BFS (Breadth-First Search)" &&
                                 currentStep.customData != null) {
                                 Spacer(modifier = Modifier.height(12.dp))
@@ -478,7 +468,7 @@ fun VisualizationControls(
                     modifier = Modifier.weight(1f)
                 )
 
-                Speed.values().forEach { speedOption ->
+                Speed.entries.forEach { speedOption ->
                     FilterChip(
                         selected = speed == speedOption,
                         onClick = { viewModel.setSpeed(speedOption) },

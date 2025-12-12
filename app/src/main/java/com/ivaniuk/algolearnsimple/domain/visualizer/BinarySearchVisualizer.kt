@@ -1,9 +1,9 @@
 package com.ivaniuk.algolearnsimple.domain.visualizer
 
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmType
+import com.ivaniuk.algolearnsimple.domain.model.DataGenerator
 import com.ivaniuk.algolearnsimple.domain.model.VisualizationStep
 import com.ivaniuk.algolearnsimple.domain.repository.AlgorithmVisualizer
-import com.ivaniuk.algolearnsimple.domain.util.DataGenerator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -17,14 +17,21 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
     }
 
     override fun visualize(input: Any): Flow<List<VisualizationStep>> = flow {
-        val data = input as? Pair<List<Int>, Int> ?: getDefaultInput() as Pair<List<Int>, Int>
+        val data = when {
+            input is Pair<*, *> && input.first is List<*> && input.second is Int -> {
+                val list = (input.first as List<*>).filterIsInstance<Int>()
+                val targetValue = input.second as Int
+                Pair(list, targetValue)
+            }
+            else -> getDefaultInput()
+        }
+
         val array = data.first
         val target = data.second
 
         val steps = mutableListOf<VisualizationStep>()
         var stepCounter = 0
 
-        // Шаг 0: Начало
         steps.add(
             VisualizationStep(
                 stepNumber = stepCounter++,
@@ -156,7 +163,7 @@ class BinarySearchVisualizer : AlgorithmVisualizer {
         emit(steps)
     }
 
-    override fun getDefaultInput(): Any {
+    override fun getDefaultInput(): Pair<List<Int>, Int> {
         return Pair(
             listOf(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25),
             13

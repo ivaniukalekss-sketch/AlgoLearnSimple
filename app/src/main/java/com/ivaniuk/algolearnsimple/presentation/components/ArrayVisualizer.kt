@@ -15,23 +15,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
 fun ArrayVisualizer(
+    modifier: Modifier = Modifier,
     array: List<Int>,
     highlightedIndices: Set<Int> = emptySet(),
     comparingIndices: Set<Int> = emptySet(),
     swappedIndices: Set<Int> = emptySet(),
     sortedIndices: Set<Int> = emptySet(),
-    currentIndex: Int? = null,
-    modifier: Modifier = Modifier
+    currentIndex: Int? = null
 ) {
     val maxValue = if (array.isNotEmpty()) array.maxOrNull() ?: 1 else 1
     val maxBarHeight = 220.dp
@@ -82,13 +79,13 @@ fun ArrayVisualizer(
                     }
                     val targetHeight = normalizedHeight.dp
 
-                    // Цвет
-                    val targetColor = when {
-                        index in comparingIndices -> Color(0xFFFFA726)
-                        index in swappedIndices -> Color(0xFFEF5350)
-                        index in sortedIndices -> Color(0xFF66BB6A)
-                        index in highlightedIndices -> Color(0xFF42A5F5)
-                        index == currentIndex -> Color(0xFF673AB7)
+                    // Цвет - исправленный when с subject
+                    val targetColor = when (index) {
+                        in comparingIndices -> Color(0xFFFFA726)
+                        in swappedIndices -> Color(0xFFEF5350)
+                        in sortedIndices -> Color(0xFF66BB6A)
+                        in highlightedIndices -> Color(0xFF42A5F5)
+                        currentIndex -> Color(0xFF673AB7)
                         else -> MaterialTheme.colorScheme.primary
                     }
 

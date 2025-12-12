@@ -28,8 +28,8 @@ fun AlgorithmCard(
     algorithm: Algorithm,
     onCardClick: () -> Unit,
     onFavoriteClick: () -> Unit,
-    onVisualizeClick: (() -> Unit)? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onVisualizeClick: (() -> Unit)? = null
 ) {
     Card(
         modifier = modifier

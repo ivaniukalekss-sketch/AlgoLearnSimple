@@ -11,9 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-class AlgorithmRepositoryImpl(
-    private val context: Context
-) : AlgorithmRepository {
+class AlgorithmRepositoryImpl(context: Context) : AlgorithmRepository {
 
     private val localStorage = LocalStorage(context)
 
@@ -141,7 +139,6 @@ class AlgorithmRepositoryImpl(
             ),
             isFavorite = favoriteIds.contains(4)
         ),
-
         Algorithm(
             id = 5,
             title = "BFS (Breadth-First Search)",
@@ -168,10 +165,9 @@ class AlgorithmRepositoryImpl(
                     }
                 }
             }
-            
             return result
         }
-    """.trimIndent(),
+            """.trimIndent(),
             steps = listOf(
                 "Добавляем стартовую вершину в очередь и помечаем как посещённую",
                 "Пока очередь не пуста, извлекаем первую вершину",
@@ -199,7 +195,6 @@ class AlgorithmRepositoryImpl(
         }
 
     override suspend fun toggleFavorite(algorithmId: Int) {
-        // Небольшая задержка для имитации реальной работы
         delay(50)
 
         _algorithms.update { currentAlgorithms ->

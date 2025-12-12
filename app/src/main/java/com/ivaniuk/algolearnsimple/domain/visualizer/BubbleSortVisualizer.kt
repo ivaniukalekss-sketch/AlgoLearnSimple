@@ -1,9 +1,9 @@
 package com.ivaniuk.algolearnsimple.domain.visualizer
 
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmType
+import com.ivaniuk.algolearnsimple.domain.model.DataGenerator
 import com.ivaniuk.algolearnsimple.domain.model.VisualizationStep
 import com.ivaniuk.algolearnsimple.domain.repository.AlgorithmVisualizer
-import com.ivaniuk.algolearnsimple.domain.util.DataGenerator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -17,7 +17,13 @@ class BubbleSortVisualizer : AlgorithmVisualizer {
     }
 
     override fun visualize(input: Any): Flow<List<VisualizationStep>> = flow {
-        val array = input as? List<Int> ?: getDefaultInput() as List<Int>
+        val array = when (input) {
+            is List<*> -> {
+                input.filterIsInstance<Int>()
+            }
+            else -> getDefaultInput()
+        }
+
         val steps = mutableListOf<VisualizationStep>()
         val mutableArray = array.toMutableList()
         val n = mutableArray.size
@@ -123,7 +129,7 @@ class BubbleSortVisualizer : AlgorithmVisualizer {
         emit(steps)
     }
 
-    override fun getDefaultInput(): Any {
+    override fun getDefaultInput(): List<Int> {
         return listOf(5, 3, 8, 4, 2, 7, 1, 6)
     }
 

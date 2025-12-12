@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.ivaniuk.algolearnsimple.domain.model.Algorithm
 import com.ivaniuk.algolearnsimple.presentation.components.AlgorithmCard
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.HomeViewModel
 
@@ -41,7 +40,6 @@ fun FavoritesScreen(
     onToggleFavorite: (Int) -> Unit,
     onBack: () -> Unit
 ) {
-    // Правильный способ получить данные
     val algorithms by viewModel.algorithms.collectAsState()
     val favoriteAlgorithms = algorithms.filter { it.isFavorite }
 
@@ -56,7 +54,10 @@ fun FavoritesScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад"
+                        )
                     }
                 }
             )

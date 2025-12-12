@@ -29,9 +29,7 @@ fun Legend(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        // Если 5 элементов - делаем 2 строки: 3+2
         if (legendItems.size == 5) {
-            // Первая строка: 3 элемента
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -44,13 +42,11 @@ fun Legend(
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            // Вторая строка: 2 элемента
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Добавляем пустой элемент слева для центрирования 2 элементов
                 Spacer(modifier = Modifier.weight(1f))
                 legendItems.drop(3).forEach { item ->
                     SingleLegendItem(item)
@@ -58,7 +54,6 @@ fun Legend(
                 }
             }
         } else if (legendItems.size == 4) {
-            // 4 элемента - 2 строки по 2
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -81,7 +76,6 @@ fun Legend(
                 }
             }
         } else {
-            // Для другого количества - просто горизонтально
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -100,7 +94,7 @@ private fun SingleLegendItem(item: LegendItem) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp),
-        modifier = Modifier.width(80.dp) // Фиксированная ширина
+        modifier = Modifier.width(80.dp)
     ) {
         Box(
             modifier = Modifier

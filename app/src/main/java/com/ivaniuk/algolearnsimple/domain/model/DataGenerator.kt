@@ -1,4 +1,4 @@
-package com.ivaniuk.algolearnsimple.domain.util
+package com.ivaniuk.algolearnsimple.domain.model
 
 import kotlin.random.Random
 
@@ -20,9 +20,9 @@ object DataGenerator {
     fun generateBinarySearchData(): Pair<List<Int>, Int> {
         val array = generateSortedArray()
         val target = if (Random.nextBoolean()) {
-            array.random() // Существующий элемент
+            array.random()
         } else {
-            array.maxOrNull()!! + Random.nextInt(5, 15) // Несуществующий
+            array.maxOrNull()!! + Random.nextInt(5, 15)
         }
         return Pair(array, target)
     }
@@ -37,14 +37,13 @@ object DataGenerator {
 
         for (i in 0 until vertices) {
             for (j in i + 1 until vertices) {
-                if (Random.nextDouble() < 0.4) { // 40% вероятность ребра
+                if (Random.nextDouble() < 0.4) {
                     graph[i]?.add(j)
                     graph[j]?.add(i)
                 }
             }
         }
 
-        // Гарантируем связность
         for (i in 0 until vertices) {
             if (graph[i]?.isEmpty() == true) {
                 val other = (0 until vertices).filter { it != i }.random()

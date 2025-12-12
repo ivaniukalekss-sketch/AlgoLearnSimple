@@ -53,14 +53,13 @@ class VisualizationViewModel(
         }
     }
 
-    // Простой метод для генерации случайных данных
+    // Метод для генерации случайных данных
     fun generateRandomData() {
         try {
             val randomInput = visualizer.generateRandomInput()
             _isRandomData.value = true
             loadVisualization(randomInput)
         } catch (e: Exception) {
-            // Если метод не реализован, используем стандартные данные
             _isRandomData.value = false
             loadDefaultVisualization()
         }
@@ -70,8 +69,6 @@ class VisualizationViewModel(
     fun resetToDefaultData() {
         loadDefaultVisualization()
     }
-
-    // === Существующие методы без изменений ===
 
     fun play() {
         if (_isPlaying.value) return
@@ -97,10 +94,6 @@ class VisualizationViewModel(
         playbackJob = null
     }
 
-    fun stop() {
-        pause()
-        resetToFirstStep()
-    }
 
     fun nextStep() {
         if (_currentStepIndex.value < _steps.value.size - 1) {

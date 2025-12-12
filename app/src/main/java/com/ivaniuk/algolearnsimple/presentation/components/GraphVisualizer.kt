@@ -114,11 +114,11 @@ fun GraphVisualizer(
 
                 // Рисуем вершины
                 nodes.forEach { node ->
-                    val color = when {
-                        node.id in currentNodes -> Color(0xFFFFA726)    // Оранжевый - Текущий
-                        node.id in visitedNodes -> Color(0xFF66BB6A)    // Зелёный - Посещённый
-                        node.id in highlightedNodes -> Color(0xFF42A5F5) // Синий - Выделенный
-                        else -> primaryColor                            // Основной - Обычный
+                    val color = when (node.id) {
+                        in currentNodes -> Color(0xFFFFA726)
+                        in visitedNodes -> Color(0xFF66BB6A)
+                        in highlightedNodes -> Color(0xFF42A5F5)
+                        else -> primaryColor
                     }
 
                     // Внешняя обводка
@@ -138,16 +138,10 @@ fun GraphVisualizer(
 
                     // ID вершины
                     val paint = android.graphics.Paint().apply {
-                        this.color = when {
-                            node.id in visitedNodes || node.id in currentNodes -> {
-                                android.graphics.Color.WHITE
-                            }
-                            node.id in highlightedNodes -> {
-                                android.graphics.Color.WHITE
-                            }
-                            else -> {
-                                android.graphics.Color.BLACK
-                            }
+                        this.color = when (node.id) {
+                            in visitedNodes, in currentNodes -> android.graphics.Color.WHITE
+                            in highlightedNodes -> android.graphics.Color.WHITE
+                            else -> android.graphics.Color.BLACK
                         }
                         textSize = 24f
                         textAlign = android.graphics.Paint.Align.CENTER
@@ -163,7 +157,7 @@ fun GraphVisualizer(
             }
         }
 
-        // Легенда (если нужно показывать)
+        // Легенда
         if (showLegend && (currentNodes.isNotEmpty() || visitedNodes.isNotEmpty() || highlightedNodes.isNotEmpty())) {
             val legendItems = mutableListOf<LegendItem>()
 
@@ -177,7 +171,6 @@ fun GraphVisualizer(
                 legendItems.add(LegendItem(Color(0xFF42A5F5), "Выделенный"))
             }
 
-            // Всегда добавляем "Обычный" для контекста
             legendItems.add(LegendItem(primaryColor, "Обычный"))
 
             Legend(
