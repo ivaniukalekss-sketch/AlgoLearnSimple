@@ -20,8 +20,7 @@ import com.ivaniuk.algolearnsimple.presentation.screens.HomeScreen
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 import com.ivaniuk.algolearnsimple.domain.visualizer.BinarySearchVisualizer
-import com.ivaniuk.algolearnsimple.presentation.screens.StatisticsScreen
-import com.ivaniuk.algolearnsimple.presentation.viewmodel.StatisticsViewModel
+
 
 @Composable
 fun AppNavigation(
@@ -31,10 +30,8 @@ fun AppNavigation(
     val viewModel = HomeViewModel(appContainer.algorithmRepository)
     val coroutineScope = rememberCoroutineScope()
     val homeViewModel = HomeViewModel(
-        appContainer.algorithmRepository,
-        appContainer.statisticsRepository
+        appContainer.algorithmRepository
     )
-    val statisticsViewModel = StatisticsViewModel(appContainer.statisticsRepository)
 
 
     NavHost(
@@ -59,9 +56,6 @@ fun AppNavigation(
                     // ЗДЕСЬ ОСНОВНАЯ ПРОБЛЕМА - навигация на visualization
                     navController.navigate("visualization/$algorithmId")
                 },
-                onStatisticsClick = {
-                    navController.navigate("statistics")
-                }
             )
         }
 
@@ -119,15 +113,6 @@ fun AppNavigation(
             VisualizationScreen(
                 viewModel = viewModel,
                 onBack = { navController.navigateUp() }
-            )
-        }
-        composable("statistics") {
-            StatisticsScreen(
-                viewModel = statisticsViewModel,
-                onBack = { navController.navigateUp() },
-                onAlgorithmClick = { algorithmId ->
-                    navController.navigate("algorithm/$algorithmId")
-                }
             )
         }
     }

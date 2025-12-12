@@ -175,7 +175,7 @@ fun VisualizationScreen(
                                 currentIndex = currentStep.currentIndex,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(430.dp)
+                                    .height(460.dp)
                             )
                             Text(
                                 text = "Элементов: ${currentStep.array.size}",

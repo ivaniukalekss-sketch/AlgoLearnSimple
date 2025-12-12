@@ -34,8 +34,7 @@ fun HomeScreen(
     onAlgorithmClick: (Int) -> Unit,
     onToggleFavorite: (Int) -> Unit,
     onFavoritesClick: () -> Unit,
-    onVisualizeClick: (Int) -> Unit,
-    onStatisticsClick: () -> Unit
+    onVisualizeClick: (Int) -> Unit
 ) {
     val algorithms by viewModel.algorithms.collectAsState()
     var searchText by remember { mutableStateOf("") }
@@ -61,13 +60,6 @@ fun HomeScreen(
                         )
                     },
                     actions = {
-                        // Кнопка статистики
-                        IconButton(onClick = onStatisticsClick) {
-                            Icon(
-                                imageVector = Icons.Default.BarChart,
-                                contentDescription = "Статистика"
-                            )
-                        }
                         // Кнопка избранного
                         IconButton(onClick = onFavoritesClick) {
                             Icon(

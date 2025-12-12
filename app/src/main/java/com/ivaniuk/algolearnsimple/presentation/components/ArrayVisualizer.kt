@@ -64,7 +64,7 @@ fun ArrayVisualizer(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(260.dp) // Увеличили высоту
+                .height(260.dp)
                 .padding(bottom = 12.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
@@ -88,7 +88,7 @@ fun ArrayVisualizer(
                         index in swappedIndices -> Color(0xFFEF5350)
                         index in sortedIndices -> Color(0xFF66BB6A)
                         index in highlightedIndices -> Color(0xFF42A5F5)
-                        index == currentIndex -> Color(0xFFAB47BC)
+                        index == currentIndex -> Color(0xFF673AB7)
                         else -> MaterialTheme.colorScheme.primary
                     }
 
@@ -113,10 +113,9 @@ fun ArrayVisualizer(
                         Color.White
                     }
 
-                    // КОНТЕЙНЕР С WEIGHT - ГЛАВНОЕ ИСПРАВЛЕНИЕ!
                     Box(
                         modifier = Modifier
-                            .weight(1f) // РАВНОМЕРНОЕ РАСПРЕДЕЛЕНИЕ
+                            .weight(1f)
                             .padding(horizontal = 2.dp)
                     ) {
                         Column(
@@ -167,7 +166,7 @@ fun ArrayVisualizer(
             LegendItem(Color(0xFFFFA726), "Сравнение"),
             LegendItem(Color(0xFFEF5350), "Обмен"),
             LegendItem(Color(0xFF42A5F5), "Выделено"),
-            LegendItem(Color(0xFFAB47BC), "Текущий")
+            LegendItem(Color(0xFF673AB7), "Текущий")
         )
 
         Legend(

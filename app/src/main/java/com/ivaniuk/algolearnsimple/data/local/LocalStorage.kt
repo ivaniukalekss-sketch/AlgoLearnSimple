@@ -12,7 +12,6 @@ class LocalStorage(private val context: Context) {
     private val FAVORITES_KEY = "favorite_algorithms"
 
     fun saveFavorites(favoriteIds: Set<Int>) {
-        // Конвертируем Set<Int> в Set<String> для SharedPreferences
         val stringSet = favoriteIds.map { it.toString() }.toSet()
         sharedPreferences.edit {
             putStringSet(FAVORITES_KEY, stringSet)
@@ -29,27 +28,6 @@ class LocalStorage(private val context: Context) {
         sharedPreferences.edit {
             remove(FAVORITES_KEY)
         }
-    }
-    fun saveStudyStatistic(statisticJson: String) {
-        val stats = getStudyStatistics().toMutableList()
-        stats.add(statisticJson)
-        sharedPreferences.edit {
-            putStringSet(STUDY_STATS_KEY, stats.toSet())
-        }
-    }
-
-    fun getStudyStatistics(): Set<String> {
-        return sharedPreferences.getStringSet(STUDY_STATS_KEY, emptySet()) ?: emptySet()
-    }
-
-    fun saveUserStats(statsJson: String) {
-        sharedPreferences.edit {
-            putString(USER_STATS_KEY, statsJson)
-        }
-    }
-
-    fun getUserStats(): String? {
-        return sharedPreferences.getString(USER_STATS_KEY, null)
     }
 
     fun saveString(key: String, value: String) {
@@ -77,14 +55,6 @@ class LocalStorage(private val context: Context) {
     }
 
     companion object {
-        // Существующие ключи
         const val FAVORITES_KEY = "favorite_algorithms"
-
-        // Новые ключи для статистики
-        const val STUDY_STATS_KEY = "study_statistics"
-        const val USER_STATS_KEY = "user_statistics"
-        const val DAILY_STATS_KEY = "daily_statistics"
-        const val LEARNING_STREAK_KEY = "learning_streak"
-        const val LAST_STUDY_DATE_KEY = "last_study_date"
     }
 }

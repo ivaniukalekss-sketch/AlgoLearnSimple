@@ -2,6 +2,7 @@ package com.ivaniuk.algolearnsimple.presentation.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import kotlin.math.PI
@@ -45,7 +47,8 @@ fun WeightedGraphVisualizer(
     targetNode: Int? = null,
     modifier: Modifier = Modifier,
     size: DpSize = DpSize(350.dp, 300.dp),
-    showLegend: Boolean = true
+    showLegend: Boolean = true,
+    showDynamicLegend: Boolean = false
 ) {
     val density = LocalDensity.current
     val widthPx = with(density) { size.width.toPx() }
@@ -191,14 +194,73 @@ fun WeightedGraphVisualizer(
 
         // Легенда для взвешенного графа
         if (showLegend) {
-            WeightedGraphLegend(
-                showStartTarget = startNode != null || targetNode != null,
-                showCurrent = currentNodes.isNotEmpty(),
-                showVisited = visitedNodes.isNotEmpty(),
-                showHighlighted = highlightedNodes.isNotEmpty(),
-                showHighlightedEdges = highlightedEdges.isNotEmpty(),
-                modifier = Modifier.fillMaxWidth()
-            )
+            val legendItems = mutableListOf<LegendItem>()
+
+            // Фиксированные элементы для Дейкстры
+            startNode?.let {
+                legendItems.add(LegendItem(Color(0xFF2196F3), "Старт"))
+            }
+            targetNode?.let {
+                legendItems.add(LegendItem(Color(0xFFFF9800), "Цель"))
+            }
+
+            // Динамические элементы (только если есть соответствующие вершины)
+            val actualCurrentNodes = currentNodes.intersect(graph.keys)
+            val actualVisitedNodes = visitedNodes.intersect(graph.keys)
+            val actualHighlightedNodes = highlightedNodes.intersect(graph.keys)
+
+            if (actualCurrentNodes.isNotEmpty()) {
+                legendItems.add(LegendItem(Color(0xFFFFA726), "Текущая"))
+            }
+            if (actualVisitedNodes.isNotEmpty()) {
+                legendItems.add(LegendItem(Color(0xFF66BB6A), "Обработанная"))
+            }
+            if (actualHighlightedNodes.isNotEmpty()) {
+                legendItems.add(LegendItem(Color(0xFF42A5F5), "Рассматриваемая"))
+            }
+            if (highlightedEdges.isNotEmpty()) {
+                legendItems.add(LegendItem(Color.Blue, "Путь", showCircle = false, showLine = true))
+            }
+
+            // Всегда добавляем базовый цвет для контекста
+            legendItems.add(LegendItem(primaryColor, "Обычная"))
+
+            // Отрисовываем легенду
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Обозначения:",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                // Разбиваем легенду на строки по 3 элемента для лучшего отображения
+                val rows = legendItems.chunked(3)
+
+                rows.forEach { rowItems ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        rowItems.forEach { item ->
+                            SingleLegendItem(
+                                item = item,
+                                modifier = Modifier.width(80.dp)
+                            )
+                        }
+                        // Заполняем оставшееся место если элементов меньше 3
+                        repeat(3 - rowItems.size) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+                    if (rows.indexOf(rowItems) < rows.size - 1) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
+                }
+            }
         }
 
         // Информация о состоянии обхода
@@ -265,37 +327,34 @@ private fun calculatePerpendicularOffset(start: Offset, end: Offset): Offset {
 fun WeightedGraphLegend(
     modifier: Modifier = Modifier,
     showStartTarget: Boolean = true,
-    showCurrent: Boolean = true,
-    showVisited: Boolean = true,
-    showHighlighted: Boolean = true,
-    showHighlightedEdges: Boolean = true
+    showCurrent: Boolean = false,
+    showVisited: Boolean = false,
+    showHighlighted: Boolean = false,
+    showHighlightedEdges: Boolean = false
 ) {
     val primaryColor = MaterialTheme.colorScheme.primary
     val legendItems = mutableListOf<LegendItem>()
 
-    if (showStartTarget) {
-        legendItems.add(LegendItem(Color(0xFF2196F3), "Старт", true, false))
-        legendItems.add(LegendItem(Color(0xFFFF9800), "Цель", true, false))
-    }
+    // Базовые элементы (всегда показываем)
+    legendItems.add(LegendItem(Color(0xFF2196F3), "Старт"))
+    legendItems.add(LegendItem(Color(0xFFFF9800), "Цель"))
+    legendItems.add(LegendItem(primaryColor, "Обычная"))
+    legendItems.add(LegendItem(Color.Blue, "Путь", showCircle = false, showLine = true))
+
+    // Динамические элементы (показываем только если нужно)
     if (showCurrent) {
-        legendItems.add(LegendItem(Color(0xFFFFA726), "Текущий", true, false))
+        legendItems.add(LegendItem(Color(0xFFFFA726), "Текущая"))
     }
     if (showVisited) {
-        legendItems.add(LegendItem(Color(0xFF66BB6A), "Посещённый", true, false))
+        legendItems.add(LegendItem(Color(0xFF66BB6A), "Обработанная"))
     }
     if (showHighlighted) {
-        legendItems.add(LegendItem(Color(0xFF42A5F5), "Выделенный", true, false))
+        legendItems.add(LegendItem(Color(0xFF42A5F5), "Рассматриваемая"))
     }
-    if (showHighlightedEdges) {
-        legendItems.add(LegendItem(Color.Blue, "Ребро пути", false, true))
-    }
-
-    // Всегда добавляем "Обычный" для контекста
-    legendItems.add(LegendItem(primaryColor, "Обычный", true, false))
 
     Column(
         modifier = modifier,
-        verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
             text = "Обозначения:",
@@ -303,54 +362,67 @@ fun WeightedGraphLegend(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        // Разбиваем на строки по 3 элемента
-        val chunkedItems = legendItems.chunked(3)
+        // Разбиваем на строки (максимум 3 элемента в строке)
+        val rows = legendItems.chunked(3)
 
-        chunkedItems.forEach { rowItems ->
+        rows.forEach { rowItems ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 rowItems.forEach { item ->
-                    SingleLegendItem(item)
+                    SingleLegendItem(
+                        item = item,
+                        modifier = Modifier.width(80.dp)
+                    )
                 }
-                // Заполняем оставшееся место
+                // Заполняем пустые места
                 repeat(3 - rowItems.size) {
                     Spacer(modifier = Modifier.weight(1f))
                 }
+            }
+            // Добавляем небольшой отступ между строками
+            if (rows.indexOf(rowItems) < rows.size - 1) {
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
     }
 }
 
 @Composable
-private fun SingleLegendItem(item: LegendItem) {
+private fun SingleLegendItem(
+    item: LegendItem,
+    modifier: Modifier = Modifier
+) {
     Column(
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(4.dp),
-        modifier = Modifier.width(80.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        if (item.showCircle) {
-            Box(
-                modifier = Modifier
-                    .size(14.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(item.color)
-            )
-        } else if (item.showLine) {
-            Box(
-                modifier = Modifier
-                    .width(24.dp)
-                    .height(3.dp)
-                    .background(item.color)
-            )
+        when {
+            item.showCircle -> {
+                Box(
+                    modifier = Modifier
+                        .size(14.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(item.color)
+                )
+            }
+            item.showLine -> {
+                Box(
+                    modifier = Modifier
+                        .width(24.dp)
+                        .height(3.dp)
+                        .background(item.color)
+                )
+            }
         }
         Text(
             text = item.label,
-            style = MaterialTheme.typography.labelSmall,  // ← ИСПРАВЛЕНО!
+            style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurface,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            textAlign = TextAlign.Center,
             maxLines = 1
         )
     }
