@@ -56,21 +56,4 @@ object DataGenerator {
         return graph
     }
 
-    // Генерация взвешенного графа для Дейкстры
-    fun generateWeightedGraph(): Triple<Map<Int, List<Pair<Int, Int>>>, Int, Int> {
-        val vertices = 5
-        val graph = mutableMapOf<Int, MutableList<Pair<Int, Int>>>()
-
-        for (i in 0 until vertices) {
-            graph[i] = mutableListOf()
-        }
-
-        // Простой граф с гарантированными путями
-        graph[0]?.addAll(listOf(1 to 4, 2 to 1))
-        graph[1]?.addAll(listOf(0 to 4, 3 to 1))
-        graph[2]?.addAll(listOf(0 to 1, 1 to 2, 3 to 5))
-        graph[3]?.addAll(listOf(1 to 1, 2 to 5))
-
-        return Triple(graph, 0, 3)
-    }
 }

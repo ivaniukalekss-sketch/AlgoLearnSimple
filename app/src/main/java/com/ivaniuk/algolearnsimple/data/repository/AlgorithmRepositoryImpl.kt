@@ -141,60 +141,44 @@ class AlgorithmRepositoryImpl(
             ),
             isFavorite = favoriteIds.contains(4)
         ),
+
         Algorithm(
             id = 5,
-            title = "Dijkstra's Algorithm",
-            description = "Алгоритм поиска кратчайшего пути от одной вершины до всех остальных в взвешенном графе с неотрицательными весами рёбер. Использует жадную стратегию, выбирая на каждом шаге вершину с минимальным расстоянием.",
+            title = "BFS (Breadth-First Search)",
+            description = "Алгоритм обхода графа по уровням. Исследует все соседние вершины на текущем уровне, прежде чем перейти на следующий уровень. Используется для поиска кратчайшего пути в невзвешенных графах.",
             category = AlgorithmCategory.GRAPH,
-            complexity = "O(V²) или O(E + V log V) с приоритетной очередью",
+            complexity = "O(V + E)",
             codeExample = """
-        fun dijkstra(graph: Map<Int, List<Pair<Int, Int>>>, start: Int): Map<Int, Int> {
-            // Расстояния от стартовой вершины до всех остальных
-            val distances = mutableMapOf<Int, Int>()
+        fun bfs(graph: Map<Int, List<Int>>, start: Int): List<Int> {
             val visited = mutableSetOf<Int>()
-            val priorityQueue = PriorityQueue<Pair<Int, Int>>(compareBy { it.second })
+            val queue = ArrayDeque<Int>()
+            val result = mutableListOf<Int>()
             
-            // Инициализируем расстояния
-            graph.keys.forEach { vertex ->
-                distances[vertex] = if (vertex == start) 0 else Int.MAX_VALUE
-            }
+            queue.addLast(start)
+            visited.add(start)
             
-            priorityQueue.add(start to 0)
-            
-            while (priorityQueue.isNotEmpty()) {
-                val (currentVertex, currentDistance) = priorityQueue.poll()
+            while (queue.isNotEmpty()) {
+                val current = queue.removeFirst()
+                result.add(current)
                 
-                if (currentVertex in visited) continue
-                visited.add(currentVertex)
-                
-                graph[currentVertex]?.forEach { (neighbor, weight) ->
-                    val newDistance = currentDistance + weight
-                    
-                    if (newDistance < distances[neighbor]!!) {
-                        distances[neighbor] = newDistance
-                        priorityQueue.add(neighbor to newDistance)
+                graph[current]?.forEach { neighbor ->
+                    if (neighbor !in visited) {
+                        visited.add(neighbor)
+                        queue.addLast(neighbor)
                     }
                 }
             }
             
-            return distances
+            return result
         }
-        
-        // Пример графа в виде списка смежности с весами
-        // 0 -> [(1, 4), (2, 1)]
-        // 1 -> [(3, 1)]
-        // 2 -> [(1, 2), (3, 5)]
-        // 3 -> []
     """.trimIndent(),
             steps = listOf(
-                "Инициализируем расстояния: 0 для стартовой вершины, ∞ для остальных",
-                "Создаём приоритетную очередь и добавляем стартовую вершину",
-                "Пока очередь не пуста, извлекаем вершину с минимальным расстоянием",
-                "Помечаем вершину как посещённую",
-                "Для каждого соседа текущей вершины вычисляем новое расстояние",
-                "Если новое расстояние меньше известного - обновляем",
-                "Добавляем соседа в приоритетную очередь с обновлённым расстоянием",
-                "Повторяем до тех пор, пока не посетим все достижимые вершины"
+                "Добавляем стартовую вершину в очередь и помечаем как посещённую",
+                "Пока очередь не пуста, извлекаем первую вершину",
+                "Обрабатываем текущую вершину",
+                "Для каждого соседа, который ещё не посещён",
+                "Добавляем соседа в очередь и помечаем как посещённого",
+                "Повторяем пока очередь не опустеет"
             ),
             isFavorite = favoriteIds.contains(5)
         )
