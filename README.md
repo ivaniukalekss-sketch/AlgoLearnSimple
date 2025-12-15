@@ -15,12 +15,12 @@ AlgoLearnSimple
 
 Структура проекта:
 app/src/main/java/com/ivanluk/algolearnsimple/
-├── MainActivity.kt
-├── AppContainer.kt
-├── core/theme/          # Дизайн-система
-├── data/               # Data слой (репозитории, хранилище)
-├── domain/             # Domain слой (модели, визуализаторы)
-└── presentation/       # UI (экран, компоненты, ViewModel)
+ MainActivity.kt
+ AppContainer.kt
+ core/theme/  (Дизайн-система)
+ data/ (Data слой (репозитории, хранилище))
+ domain/  (Domain слой (модели, визуализаторы))
+ presentation/ (UI (экран, компоненты, ViewModel))
 
 Технологии:
 - Kotlin
