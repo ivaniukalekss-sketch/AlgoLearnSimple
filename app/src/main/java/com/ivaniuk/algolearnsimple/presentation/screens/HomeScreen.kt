@@ -54,7 +54,7 @@ fun HomeScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            text = "AlgoLearn",
+                            text = "AlgoLearnSimple",
                             fontWeight = FontWeight.Bold
                         )
                     },

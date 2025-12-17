@@ -176,12 +176,7 @@ fun VisualizationScreen(
                                     .fillMaxWidth()
                                     .height(460.dp)
                             )
-                            Text(
-                                text = "Элементов: ${currentStep.array.size}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(top = 8.dp)
-                            )
+
                         }
                     }
                 }
@@ -220,13 +215,7 @@ fun VisualizationScreen(
 
                             GraphLegend(modifier = Modifier.fillMaxWidth())
 
-                            val edgeCount = currentStep.graph.values.sumOf { it.size } / 2
-                            Text(
-                                text = "Вершин: ${currentStep.graph.keys.size}, Рёбер: $edgeCount",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(top = 8.dp)
-                            )
+
 
                             if (viewModel.getAlgorithmName() == "BFS (Breadth-First Search)" &&
                                 currentStep.customData != null) {

@@ -50,7 +50,7 @@ fun GraphVisualizer(
     ) {
         // Заголовок с информацией о графе
         Text(
-            text = "Граф (${graph.keys.size} вершин, ${graph.values.sumOf { it.size } / 2} рёбер):",
+            text = "(${graph.keys.size} вершин, ${graph.values.sumOf { it.size } / 2} рёбер):",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
