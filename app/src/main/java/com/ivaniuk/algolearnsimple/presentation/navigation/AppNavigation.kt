@@ -12,7 +12,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.ivaniuk.algolearnsimple.AppContainer
 import com.ivaniuk.algolearnsimple.domain.visualizer.BFSVisualizer
 import com.ivaniuk.algolearnsimple.presentation.screens.AlgorithmDetailScreen
 import com.ivaniuk.algolearnsimple.presentation.screens.FavoritesScreen
@@ -20,14 +19,12 @@ import com.ivaniuk.algolearnsimple.presentation.screens.HomeScreen
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 import com.ivaniuk.algolearnsimple.domain.visualizer.BinarySearchVisualizer
-
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun AppNavigation(
-    appContainer: AppContainer
-) {
+fun AppNavigation() {
+    val viewModel: HomeViewModel = hiltViewModel()
     val navController = rememberNavController()
-    val viewModel = HomeViewModel(appContainer.algorithmRepository)
     val coroutineScope = rememberCoroutineScope()
 
     NavHost(

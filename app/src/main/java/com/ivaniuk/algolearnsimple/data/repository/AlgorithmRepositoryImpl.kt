@@ -11,9 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-class AlgorithmRepositoryImpl(context: Context) : AlgorithmRepository {
-
-    private val localStorage = LocalStorage(context)
+class AlgorithmRepositoryImpl(private val localStorage: LocalStorage) : AlgorithmRepository {
 
     // Загружаем избранные ID из хранилища при создании
     private val favoriteIds = localStorage.getFavorites().toMutableSet()
