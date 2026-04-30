@@ -55,4 +55,34 @@ object DataGenerator {
         return graph
     }
 
+    fun generateRandomWeightedGraph(vertices: Int = 5): Map<Int, List<Pair<Int, Int>>> {
+        val graph = mutableMapOf<Int, MutableList<Pair<Int, Int>>>()
+
+        for (i in 0 until vertices) {
+            graph[i] = mutableListOf()
+        }
+
+        for (i in 0 until vertices) {
+            for (j in i + 1 until vertices) {
+                if (Random.nextDouble() < 0.4) {
+                    val weight = Random.nextInt(1, 15)
+                    graph[i]?.add(Pair(j, weight))
+                    graph[j]?.add(Pair(i, weight))
+                }
+            }
+        }
+
+        // Убедимся, что граф связный
+        for (i in 0 until vertices) {
+            if (graph[i]?.isEmpty() == true) {
+                val other = (0 until vertices).filter { it != i }.random()
+                val weight = Random.nextInt(1, 15)
+                graph[i]?.add(Pair(other, weight))
+                graph[other]?.add(Pair(i, weight))
+            }
+        }
+
+        return graph
+    }
+
 }

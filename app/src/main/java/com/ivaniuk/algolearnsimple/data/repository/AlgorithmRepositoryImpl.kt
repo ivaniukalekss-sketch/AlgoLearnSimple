@@ -222,6 +222,48 @@ class AlgorithmRepositoryImpl(private val localStorage: LocalStorage) : Algorith
                 "Повторяем пока весь массив не будет отсортирован"
             ),
             isFavorite = favoriteIds.contains(6)
+        ),
+        Algorithm(
+            id = 7,
+            title = "Dijkstra",
+            description = "Алгоритм находит кратчайшие пути от одной вершины до всех остальных во взвешенном графе с неотрицательными весами. Широко используется в навигационных системах и сетевой маршрутизации.",
+            category = AlgorithmCategory.GRAPH,
+            complexity = "O((V + E) log V)",
+            codeExample = """
+        fun dijkstra(graph: Map<Int, List<Pair<Int, Int>>>, start: Int): Map<Int, Int> {
+            val distances = mutableMapOf<Int, Int>().apply {
+                graph.keys.forEach { this[it] = Int.MAX_VALUE }
+                this[start] = 0
+            }
+            val visited = mutableSetOf<Int>()
+            val queue = PriorityQueue<Pair<Int, Int>>(compareBy { it.second })
+            queue.add(start to 0)
+            
+            while (queue.isNotEmpty()) {
+                val (current, dist) = queue.poll()
+                if (current in visited) continue
+                visited.add(current)
+                
+                graph[current]?.forEach { (neighbor, weight) ->
+                    val newDist = dist + weight
+                    if (newDist < distances[neighbor]!!) {
+                        distances[neighbor] = newDist
+                        queue.add(neighbor to newDist)
+                    }
+                }
+            }
+            return distances
+        }
+    """.trimIndent(),
+            steps = listOf(
+                "Устанавливаем расстояние до стартовой вершины = 0, до остальных = ∞",
+                "Помещаем стартовую вершину в очередь с приоритетом",
+                "Пока очередь не пуста, извлекаем вершину с минимальным расстоянием",
+                "Для каждого соседа вычисляем новое расстояние через текущую вершину",
+                "Если новое расстояние меньше сохранённого — обновляем и добавляем в очередь",
+                "Повторяем, пока все вершины не будут обработаны"
+            ),
+            isFavorite = favoriteIds.contains(7)
         )
     )
 
