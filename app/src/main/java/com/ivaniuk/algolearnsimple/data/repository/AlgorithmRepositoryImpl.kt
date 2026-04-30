@@ -45,7 +45,7 @@ class AlgorithmRepositoryImpl(private val localStorage: LocalStorage) : Algorith
                 "Переходим к следующей паре",
                 "Повторяем до конца массива"
             ),
-            isFavorite = favoriteIds.contains(1) // Проверяем сохраненное состояние
+            isFavorite = favoriteIds.contains(1)
         ),
         Algorithm(
             id = 2,
@@ -145,27 +145,27 @@ class AlgorithmRepositoryImpl(private val localStorage: LocalStorage) : Algorith
             category = AlgorithmCategory.GRAPH,
             complexity = "O(V + E)",
             codeExample = """
-        fun bfs(graph: Map<Int, List<Int>>, start: Int): List<Int> {
-            val visited = mutableSetOf<Int>()
-            val queue = ArrayDeque<Int>()
-            val result = mutableListOf<Int>()
-            
-            queue.addLast(start)
-            visited.add(start)
-            
-            while (queue.isNotEmpty()) {
-                val current = queue.removeFirst()
-                result.add(current)
-                
-                graph[current]?.forEach { neighbor ->
-                    if (neighbor !in visited) {
-                        visited.add(neighbor)
-                        queue.addLast(neighbor)
+                fun bfs(graph: Map<Int, List<Int>>, start: Int): List<Int> {
+                    val visited = mutableSetOf<Int>()
+                    val queue = ArrayDeque<Int>()
+                    val result = mutableListOf<Int>()
+                    
+                    queue.addLast(start)
+                    visited.add(start)
+                    
+                    while (queue.isNotEmpty()) {
+                        val current = queue.removeFirst()
+                        result.add(current)
+                        
+                        graph[current]?.forEach { neighbor ->
+                            if (neighbor !in visited) {
+                                visited.add(neighbor)
+                                queue.addLast(neighbor)
+                            }
+                        }
                     }
+                    return result
                 }
-            }
-            return result
-        }
             """.trimIndent(),
             steps = listOf(
                 "Добавляем стартовую вершину в очередь и помечаем как посещённую",
@@ -176,6 +176,52 @@ class AlgorithmRepositoryImpl(private val localStorage: LocalStorage) : Algorith
                 "Повторяем пока очередь не опустеет"
             ),
             isFavorite = favoriteIds.contains(5)
+        ),
+        Algorithm(
+            id = 6,
+            title = "Merge Sort",
+            description = "Эффективный алгоритм сортировки, основанный на принципе 'разделяй и властвуй'. Разбивает массив на две половины, рекурсивно сортирует их, а затем сливает в отсортированный массив.",
+            category = AlgorithmCategory.SORTING,
+            complexity = "O(n log n)",
+            codeExample = """
+                fun mergeSort(arr: IntArray, left: Int, right: Int) {
+                    if (left < right) {
+                        val mid = left + (right - left) / 2
+                        mergeSort(arr, left, mid)
+                        mergeSort(arr, mid + 1, right)
+                        merge(arr, left, mid, right)
+                    }
+                }
+                
+                fun merge(arr: IntArray, left: Int, mid: Int, right: Int) {
+                    val leftArray = arr.sliceArray(left..mid)
+                    val rightArray = arr.sliceArray(mid + 1..right)
+                    
+                    var i = 0
+                    var j = 0
+                    var k = left
+                    
+                    while (i < leftArray.size && j < rightArray.size) {
+                        if (leftArray[i] <= rightArray[j]) {
+                            arr[k++] = leftArray[i++]
+                        } else {
+                            arr[k++] = rightArray[j++]
+                        }
+                    }
+                    
+                    while (i < leftArray.size) arr[k++] = leftArray[i++]
+                    while (j < rightArray.size) arr[k++] = rightArray[j++]
+                }
+            """.trimIndent(),
+            steps = listOf(
+                "Если массив имеет размер 1 или пуст — он уже отсортирован (базовый случай)",
+                "Находим середину массива и делим его на две половины",
+                "Рекурсивно применяем mergeSort к левой половине",
+                "Рекурсивно применяем mergeSort к правой половине",
+                "Сливаем две отсортированные половины в один отсортированный массив",
+                "Повторяем пока весь массив не будет отсортирован"
+            ),
+            isFavorite = favoriteIds.contains(6)
         )
     )
 
@@ -201,14 +247,12 @@ class AlgorithmRepositoryImpl(private val localStorage: LocalStorage) : Algorith
                 if (algorithm.id == algorithmId) {
                     val newFavoriteState = !algorithm.isFavorite
 
-                    // Обновляем локальное хранилище
                     if (newFavoriteState) {
                         favoriteIds.add(algorithmId)
                     } else {
                         favoriteIds.remove(algorithmId)
                     }
 
-                    // Сохраняем изменения в SharedPreferences
                     localStorage.saveFavorites(favoriteIds)
 
                     println("Изменен алгоритм ID=$algorithmId: isFavorite=$newFavoriteState")
@@ -232,6 +276,7 @@ class AlgorithmRepositoryImpl(private val localStorage: LocalStorage) : Algorith
 
         return algorithm
     }
+
     fun getRecentHistory(): Flow<List<HistoryEntity>> {
         return localStorage.getRecentHistory()
     }

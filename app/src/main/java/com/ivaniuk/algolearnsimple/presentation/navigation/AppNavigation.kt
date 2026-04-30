@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import com.ivaniuk.algolearnsimple.domain.visualizer.BinarySearchVisualizer
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ivaniuk.algolearnsimple.presentation.screens.HistoryScreen
+import com.ivaniuk.algolearnsimple.domain.visualizer.MergeSortVisualizer
 
 @Composable
 fun AppNavigation() {
@@ -108,6 +109,7 @@ fun AppNavigation() {
                 3 -> QuickSortVisualizer()
                 4 -> DFSVisualizer()
                 5 -> BFSVisualizer()
+                6 -> MergeSortVisualizer()
                 else -> BubbleSortVisualizer()
             }
 
