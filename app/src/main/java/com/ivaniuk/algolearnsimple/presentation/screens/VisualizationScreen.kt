@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ivaniuk.algolearnsimple.domain.model.Speed
 import com.ivaniuk.algolearnsimple.presentation.components.ArrayVisualizer
 import com.ivaniuk.algolearnsimple.presentation.components.GraphVisualizer
@@ -49,7 +50,6 @@ fun VisualizationScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        // Исправленная иконка
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад"
@@ -57,7 +57,6 @@ fun VisualizationScreen(
                     }
                 },
                 actions = {
-                    // Кнопка для случайных данных
                     IconButton(
                         onClick = { viewModel.generateRandomData() }
                     ) {
@@ -138,7 +137,6 @@ fun VisualizationScreen(
                             style = MaterialTheme.typography.titleSmall
                         )
 
-                        // Индикатор скорости
                         Text(
                             text = "Скорость: ${when (speed) {
                                 Speed.SLOW -> "🐌 Медленно"
@@ -157,7 +155,6 @@ fun VisualizationScreen(
 
             if (currentStep != null) {
                 if (currentStep.array != null) {
-
                     Card(
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -176,11 +173,9 @@ fun VisualizationScreen(
                                     .fillMaxWidth()
                                     .height(460.dp)
                             )
-
                         }
                     }
                 }
-
 
                 if (currentStep.graph != null) {
                     Card(
@@ -212,15 +207,11 @@ fun VisualizationScreen(
                             )
 
                             Spacer(modifier = Modifier.height(8.dp))
-
                             GraphLegend(modifier = Modifier.fillMaxWidth())
-
-
 
                             if (viewModel.getAlgorithmName() == "BFS (Breadth-First Search)" &&
                                 currentStep.customData != null) {
                                 Spacer(modifier = Modifier.height(12.dp))
-
                                 Card(
                                     modifier = Modifier.fillMaxWidth(),
                                     colors = CardDefaults.cardColors(
@@ -241,7 +232,6 @@ fun VisualizationScreen(
                         }
                     }
                 }
-
 
                 Card(
                     modifier = Modifier.fillMaxWidth()
@@ -342,7 +332,6 @@ fun VisualizationScreen(
         }
     }
 }
-
 
 @Composable
 fun StepProgress(

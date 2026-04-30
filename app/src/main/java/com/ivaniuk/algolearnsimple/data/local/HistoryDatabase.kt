@@ -6,13 +6,20 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [HistoryEntity::class],
-    version = 1,
+    entities = [
+        HistoryEntity::class,
+        QuizQuestionEntity::class,
+        QuizResultEntity::class,
+        ProgressEntity::class,
+        AchievementEntity::class
+    ],
+    version = 2,
     exportSchema = false
 )
 abstract class HistoryDatabase : RoomDatabase() {
 
     abstract fun historyDao(): HistoryDao
+    abstract fun quizDao(): QuizDao
 
     companion object {
         @Volatile

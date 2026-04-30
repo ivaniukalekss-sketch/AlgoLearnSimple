@@ -3,6 +3,7 @@ package com.ivaniuk.algolearnsimple.data.local
 import android.content.Context
 import androidx.core.content.edit
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 class LocalStorage(context: Context) {
 
@@ -13,8 +14,15 @@ class LocalStorage(context: Context) {
 
     private val database = HistoryDatabase.getDatabase(context)
     private val historyDao = database.historyDao()
-
     private val favoritesKey = "favorite_algorithms"
+    private val quizDao = database.quizDao()
+
+    init {
+        // Инициализируем данные для викторин и достижений
+        kotlinx.coroutines.GlobalScope.launch {
+            QuizDataInitializer.initializeData(quizDao)
+        }
+    }
 
     fun saveFavorites(favoriteIds: Set<Int>) {
         val stringSet = favoriteIds.map { it.toString() }.toSet()
