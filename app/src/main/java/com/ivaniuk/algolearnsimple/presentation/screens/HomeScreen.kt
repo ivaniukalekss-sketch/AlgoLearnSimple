@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ivaniuk.algolearnsimple.presentation.components.AlgorithmCard
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.HomeViewModel
+import androidx.compose.material.icons.filled.History
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,6 +34,7 @@ fun HomeScreen(
     onAlgorithmClick: (Int) -> Unit,
     onToggleFavorite: (Int) -> Unit,
     onFavoritesClick: () -> Unit,
+    onHistoryClick: () -> Unit,
     onVisualizeClick: (Int) -> Unit
 ) {
     val algorithms by viewModel.algorithms.collectAsState()
@@ -65,6 +67,9 @@ fun HomeScreen(
                                 imageVector = Icons.Default.Favorite,
                                 contentDescription = "Избранное"
                             )
+                        }
+                        IconButton(onClick = onHistoryClick) {
+                            Icon(Icons.Default.History, contentDescription = "История")
                         }
                     }
                 )
@@ -131,7 +136,10 @@ fun HomeScreen(
                         items(filteredAlgorithms) { algorithm ->
                             AlgorithmCard(
                                 algorithm = algorithm,
-                                onCardClick = { onAlgorithmClick(algorithm.id) },
+                                onCardClick = {
+                                    println("🖱️ AlgorithmCard: нажата карточка ${algorithm.title}")
+                                    onAlgorithmClick(algorithm.id)
+                                },
                                 onFavoriteClick = { onToggleFavorite(algorithm.id) },
                                 onVisualizeClick = { onVisualizeClick(algorithm.id) }
                             )

@@ -1,6 +1,7 @@
 package com.ivaniuk.algolearnsimple.data.repository
 
 import android.content.Context
+import com.ivaniuk.algolearnsimple.data.local.HistoryEntity
 import com.ivaniuk.algolearnsimple.data.local.LocalStorage
 import com.ivaniuk.algolearnsimple.domain.model.Algorithm
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmCategory
@@ -223,6 +224,15 @@ class AlgorithmRepositoryImpl(private val localStorage: LocalStorage) : Algorith
 
     override suspend fun getAlgorithmById(id: Int): Algorithm? {
         delay(30)
-        return _algorithms.value.find { it.id == id }
+        val algorithm = _algorithms.value.find { it.id == id }
+
+        algorithm?.let {
+            localStorage.addToHistory(it.id, it.title)
+        }
+
+        return algorithm
+    }
+    fun getRecentHistory(): Flow<List<HistoryEntity>> {
+        return localStorage.getRecentHistory()
     }
 }

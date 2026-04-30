@@ -1,6 +1,8 @@
 package com.ivaniuk.algolearnsimple.di
 
 import android.content.Context
+import com.ivaniuk.algolearnsimple.data.local.HistoryDao
+import com.ivaniuk.algolearnsimple.data.local.HistoryDatabase
 import com.ivaniuk.algolearnsimple.data.local.LocalStorage
 import com.ivaniuk.algolearnsimple.data.repository.AlgorithmRepositoryImpl
 import com.ivaniuk.algolearnsimple.domain.repository.AlgorithmRepository
@@ -27,5 +29,19 @@ object AppModule {
         localStorage: LocalStorage
     ): AlgorithmRepository {
         return AlgorithmRepositoryImpl(localStorage)
+    }
+
+    // ============= НОВЫЕ ПРОВАЙДЕРЫ ДЛЯ ROOM =============
+
+    @Provides
+    @Singleton
+    fun provideHistoryDatabase(@ApplicationContext context: Context): HistoryDatabase {
+        return HistoryDatabase.getDatabase(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHistoryDao(database: HistoryDatabase): HistoryDao {
+        return database.historyDao()
     }
 }
