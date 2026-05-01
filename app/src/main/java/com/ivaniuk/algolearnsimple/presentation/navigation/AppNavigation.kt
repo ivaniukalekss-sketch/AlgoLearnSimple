@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ivaniuk.algolearnsimple.presentation.screens.HistoryScreen
 import com.ivaniuk.algolearnsimple.domain.visualizer.MergeSortVisualizer
 import com.ivaniuk.algolearnsimple.domain.visualizer.DijkstraVisualizer
+import com.ivaniuk.algolearnsimple.presentation.screens.ProfileScreen
 
 @Composable
 fun AppNavigation() {
@@ -52,7 +53,8 @@ fun AppNavigation() {
                 onVisualizeClick = { algorithmId ->
                     navController.navigate("visualization/$algorithmId")
                 },
-                onHistoryClick = { navController.navigate("history") }
+                onHistoryClick = { navController.navigate("history") },
+                onProfileClick = { navController.navigate("profile") }
             )
         }
 
@@ -129,6 +131,11 @@ fun AppNavigation() {
                 onAlgorithmClick = { algorithmId ->
                     navController.navigate("algorithm/$algorithmId")
                 }
+            )
+        }
+        composable("profile") {
+            ProfileScreen(
+                onBack = { navController.navigateUp() }
             )
         }
     }

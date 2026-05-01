@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.ivaniuk.algolearnsimple.presentation.components.AlgorithmCard
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.HomeViewModel
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Person
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +36,8 @@ fun HomeScreen(
     onToggleFavorite: (Int) -> Unit,
     onFavoritesClick: () -> Unit,
     onHistoryClick: () -> Unit,
-    onVisualizeClick: (Int) -> Unit
+    onVisualizeClick: (Int) -> Unit,
+    onProfileClick: () -> Unit
 ) {
     val algorithms by viewModel.algorithms.collectAsState()
     var searchText by remember { mutableStateOf("") }
@@ -70,6 +72,12 @@ fun HomeScreen(
                         }
                         IconButton(onClick = onHistoryClick) {
                             Icon(Icons.Default.History, contentDescription = "История")
+                        }
+                        IconButton(onClick = onProfileClick) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Профиль"
+                            )
                         }
                     }
                 )
