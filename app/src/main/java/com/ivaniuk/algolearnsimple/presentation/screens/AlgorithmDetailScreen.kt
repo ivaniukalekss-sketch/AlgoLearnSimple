@@ -47,7 +47,6 @@ fun AlgorithmDetailScreen(
                 title = { Text(algorithm?.title ?: "Детали алгоритма") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        // Исправленная иконка с AutoMirrored
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад"
@@ -114,14 +113,12 @@ fun AlgorithmDetailScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Заголовок
                 Text(
                     text = algorithm.title,
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold
                 )
 
-                // Категория и сложность
                 Card(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -141,7 +138,6 @@ fun AlgorithmDetailScreen(
                     }
                 }
 
-                // Описание
                 Text(
                     text = "Описание",
                     style = MaterialTheme.typography.titleLarge,
@@ -153,7 +149,6 @@ fun AlgorithmDetailScreen(
                     textAlign = TextAlign.Justify
                 )
 
-                // Шаги выполнения
                 if (algorithm.steps.isNotEmpty()) {
                     Text(
                         text = "Шаги выполнения",
@@ -181,7 +176,6 @@ fun AlgorithmDetailScreen(
                     }
                 }
 
-                // Пример кода
                 Text(
                     text = "Пример кода на Kotlin",
                     style = MaterialTheme.typography.titleLarge,

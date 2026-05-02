@@ -2,6 +2,7 @@ package com.ivaniuk.algolearnsimple.data.repository
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.ivaniuk.algolearnsimple.data.local.LocalStorage
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmCategory
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -16,12 +17,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 class AlgorithmRepositoryImplTest {
 
     private lateinit var repository: AlgorithmRepositoryImpl
+    private lateinit var localStorage: LocalStorage
     private lateinit var context: Context
 
     @Before
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
-        repository = AlgorithmRepositoryImpl(context)
+        localStorage = LocalStorage(context)
+        repository = AlgorithmRepositoryImpl(localStorage)
 
         clearSharedPreferences()
     }
@@ -41,8 +44,7 @@ class AlgorithmRepositoryImplTest {
 
     @Test
     fun testGetAllAlgorithmsReturnsCorrectList() = runBlocking {
-
-        val expectedCount = 5
+        val expectedCount = 10  // Теперь 10 алгоритмов!
 
         val algorithms = repository.getAllAlgorithms().first()
 
@@ -72,7 +74,6 @@ class AlgorithmRepositoryImplTest {
 
     @Test
     fun testToggleFavoriteChangesFavoriteStatus() = runBlocking {
-
         val algorithmId = 1
 
         val algorithmBefore = repository.getAlgorithmById(algorithmId)
@@ -98,7 +99,6 @@ class AlgorithmRepositoryImplTest {
 
     @Test
     fun testGetFavoriteAlgorithmsReturnsOnlyFavorites() = runBlocking {
-
         repository.toggleFavorite(1)
 
         val favorites = repository.getFavoriteAlgorithms().first()

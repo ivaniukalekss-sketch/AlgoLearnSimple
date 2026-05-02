@@ -16,7 +16,6 @@ class VisualizationViewModel(
     private val visualizer: AlgorithmVisualizer
 ) : ViewModel() {
 
-    // Состояния визуализации
     private val _steps = MutableStateFlow<List<VisualizationStep>>(emptyList())
     val steps: StateFlow<List<VisualizationStep>> = _steps.asStateFlow()
 
@@ -29,7 +28,6 @@ class VisualizationViewModel(
     private val _speed = MutableStateFlow(Speed.MEDIUM)
     val speed: StateFlow<Speed> = _speed.asStateFlow()
 
-    // Новое состояние для случайных данных
     private val _isRandomData = MutableStateFlow(false)
     val isRandomData: StateFlow<Boolean> = _isRandomData.asStateFlow()
 
@@ -53,19 +51,17 @@ class VisualizationViewModel(
         }
     }
 
-    // Метод для генерации случайных данных
     fun generateRandomData() {
         try {
             val randomInput = visualizer.generateRandomInput()
             _isRandomData.value = true
             loadVisualization(randomInput)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             _isRandomData.value = false
             loadDefaultVisualization()
         }
     }
 
-    // Метод для возврата к стандартным данным
     fun resetToDefaultData() {
         loadDefaultVisualization()
     }

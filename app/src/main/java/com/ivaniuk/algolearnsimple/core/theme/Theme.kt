@@ -5,6 +5,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -18,6 +20,8 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Pink40
 )
 
+val LocalDarkTheme = staticCompositionLocalOf { false }
+
 @Composable
 fun AlgoLearnTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -25,9 +29,11 @@ fun AlgoLearnTheme(
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(LocalDarkTheme provides darkTheme) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }

@@ -1,7 +1,5 @@
 package com.ivaniuk.algolearnsimple.data.repository
 
-import android.content.Context
-import com.ivaniuk.algolearnsimple.data.local.HistoryEntity
 import com.ivaniuk.algolearnsimple.data.local.LocalStorage
 import com.ivaniuk.algolearnsimple.domain.model.Algorithm
 import com.ivaniuk.algolearnsimple.domain.model.AlgorithmCategory
@@ -14,7 +12,6 @@ import kotlinx.coroutines.flow.update
 
 class AlgorithmRepositoryImpl(private val localStorage: LocalStorage) : AlgorithmRepository {
 
-    // Загружаем избранные ID из хранилища при создании
     private val favoriteIds = localStorage.getFavorites().toMutableSet()
 
     private val initialAlgorithms = listOf(
@@ -264,6 +261,87 @@ class AlgorithmRepositoryImpl(private val localStorage: LocalStorage) : Algorith
                 "Повторяем, пока все вершины не будут обработаны"
             ),
             isFavorite = favoriteIds.contains(7)
+        ),
+        Algorithm(
+            id = 8,
+            title = "Selection Sort",
+            description = "Алгоритм сортировки выбором. На каждом шаге находит минимальный элемент в неотсортированной части и ставит его на своё место.",
+            category = AlgorithmCategory.SORTING,
+            complexity = "O(n²)",
+            codeExample = """
+        fun selectionSort(arr: IntArray) {
+            for (i in arr.indices) {
+                var minIndex = i
+                for (j in i + 1 until arr.size) {
+                    if (arr[j] < arr[minIndex]) {
+                        minIndex = j
+                    }
+                }
+                val temp = arr[i]
+                arr[i] = arr[minIndex]
+                arr[minIndex] = temp
+            }
+        }
+    """.trimIndent(),
+            steps = listOf(
+                "Находим минимальный элемент в массиве",
+                "Меняем его местами с первым элементом",
+                "Повторяем для оставшейся части массива",
+                "Каждый шаг уменьшает неотсортированную часть"
+            ),
+            isFavorite = favoriteIds.contains(8)
+        ),
+        Algorithm(
+            id = 9,
+            title = "Insertion Sort",
+            description = "Алгоритм сортировки вставками. Проходит по массиву и вставляет каждый элемент в уже отсортированную часть.",
+            category = AlgorithmCategory.SORTING,
+            complexity = "O(n²)",
+            codeExample = """
+        fun insertionSort(arr: IntArray) {
+            for (i in 1 until arr.size) {
+                val key = arr[i]
+                var j = i - 1
+                while (j >= 0 && arr[j] > key) {
+                    arr[j + 1] = arr[j]
+                    j--
+                }
+                arr[j + 1] = key
+            }
+        }
+    """.trimIndent(),
+            steps = listOf(
+                "Берём следующий элемент",
+                "Сдвигаем большие элементы вправо",
+                "Вставляем элемент на правильную позицию",
+                "Повторяем для всех элементов"
+            ),
+            isFavorite = favoriteIds.contains(9)
+        ),
+        Algorithm(
+            id = 10,
+            title = "Linear Search",
+            description = "Простейший алгоритм поиска. Последовательно проверяет каждый элемент массива до нахождения нужного.",
+            category = AlgorithmCategory.SEARCHING,
+            complexity = "O(n)",
+            codeExample = """
+        fun linearSearch(arr: IntArray, target: Int): Int {
+            for (i in arr.indices) {
+                if (arr[i] == target) {
+                    return i
+                }
+            }
+            return -1
+        }
+    """.trimIndent(),
+            steps = listOf(
+                "Начинаем с первого элемента",
+                "Сравниваем текущий элемент с искомым",
+                "Если совпадает — возвращаем индекс",
+                "Если нет — переходим к следующему",
+                "Если дошли до конца — элемент не найден"
+            ),
+            isFavorite = favoriteIds.contains(10)
         )
     )
 
@@ -296,10 +374,6 @@ class AlgorithmRepositoryImpl(private val localStorage: LocalStorage) : Algorith
                     }
 
                     localStorage.saveFavorites(favoriteIds)
-
-                    println("Изменен алгоритм ID=$algorithmId: isFavorite=$newFavoriteState")
-                    println("Текущие избранные: $favoriteIds")
-
                     algorithm.copy(isFavorite = newFavoriteState)
                 } else {
                     algorithm
@@ -319,7 +393,7 @@ class AlgorithmRepositoryImpl(private val localStorage: LocalStorage) : Algorith
         return algorithm
     }
 
-    fun getRecentHistory(): Flow<List<HistoryEntity>> {
-        return localStorage.getRecentHistory()
+    override suspend fun getViewedCount(): Int {
+        return localStorage.getHistoryCount()
     }
 }

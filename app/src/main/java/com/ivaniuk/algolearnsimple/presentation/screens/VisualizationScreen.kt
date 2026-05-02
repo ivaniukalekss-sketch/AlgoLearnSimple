@@ -35,7 +35,6 @@ fun VisualizationScreen(
 
     val currentStep = viewModel.getCurrentStep()
     LaunchedEffect(isPlaying, currentStepIndex) {
-        println("DEBUG: isPlaying = $isPlaying, currentStepIndex = $currentStepIndex, steps = ${steps.size}")
     }
 
     Scaffold(
@@ -49,7 +48,6 @@ fun VisualizationScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        // Исправленная иконка
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад"
@@ -57,7 +55,6 @@ fun VisualizationScreen(
                     }
                 },
                 actions = {
-                    // Кнопка для случайных данных
                     IconButton(
                         onClick = { viewModel.generateRandomData() }
                     ) {
@@ -138,7 +135,6 @@ fun VisualizationScreen(
                             style = MaterialTheme.typography.titleSmall
                         )
 
-                        // Индикатор скорости
                         Text(
                             text = "Скорость: ${when (speed) {
                                 Speed.SLOW -> "🐌 Медленно"

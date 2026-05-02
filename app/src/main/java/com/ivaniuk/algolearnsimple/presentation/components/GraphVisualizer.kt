@@ -48,7 +48,6 @@ fun GraphVisualizer(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Заголовок с информацией о графе
         Text(
             text = "(${graph.keys.size} вершин, ${graph.values.sumOf { it.size } / 2} рёбер):",
             style = MaterialTheme.typography.titleMedium,
@@ -63,7 +62,6 @@ fun GraphVisualizer(
             contentAlignment = Alignment.Center
         ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
-                // Функция внутри лямбды Canvas
                 fun calculateNodePositions(
                     graph: Map<Int, List<Int>>,
                     canvasWidth: Float,
@@ -94,7 +92,6 @@ fun GraphVisualizer(
                     canvasHeight = heightPx
                 )
 
-                // Рисуем рёбра
                 graph.forEach { (nodeId, neighbors) ->
                     val node = nodes.find { it.id == nodeId }
                     node?.let { source ->
@@ -112,7 +109,6 @@ fun GraphVisualizer(
                     }
                 }
 
-                // Рисуем вершины
                 nodes.forEach { node ->
                     val color = when (node.id) {
                         in currentNodes -> Color(0xFFFFA726)
@@ -121,7 +117,6 @@ fun GraphVisualizer(
                         else -> primaryColor
                     }
 
-                    // Внешняя обводка
                     drawCircle(
                         color = color,
                         center = node.position,
@@ -129,14 +124,12 @@ fun GraphVisualizer(
                         style = Stroke(width = 3f)
                     )
 
-                    // Внутренняя заливка
                     drawCircle(
                         color = color.copy(alpha = 0.2f),
                         center = node.position,
                         radius = node.radius
                     )
 
-                    // ID вершины
                     val paint = android.graphics.Paint().apply {
                         this.color = when (node.id) {
                             in visitedNodes, in currentNodes -> android.graphics.Color.WHITE
@@ -157,7 +150,6 @@ fun GraphVisualizer(
             }
         }
 
-        // Легенда
         if (showLegend && (currentNodes.isNotEmpty() || visitedNodes.isNotEmpty() || highlightedNodes.isNotEmpty())) {
             val legendItems = mutableListOf<LegendItem>()
 
@@ -179,7 +171,6 @@ fun GraphVisualizer(
             )
         }
 
-        // Информация о состоянии обхода
         if (visitedNodes.isNotEmpty()) {
             Text(
                 text = "Посещено вершин: ${visitedNodes.size}/${graph.keys.size}",

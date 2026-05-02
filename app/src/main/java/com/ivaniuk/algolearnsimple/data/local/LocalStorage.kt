@@ -29,8 +29,6 @@ class LocalStorage(context: Context) {
     }
 
 
-
-
     fun getRecentHistory(): Flow<List<HistoryEntity>> {
         return historyDao.getRecentHistory()
     }
@@ -39,9 +37,6 @@ class LocalStorage(context: Context) {
         historyDao.clearAll()
     }
 
-    suspend fun getHistoryCount(): Int {
-        return historyDao.getHistoryCount()
-    }
 
     suspend fun addToHistory(algorithmId: Int, algorithmTitle: String) {
         val entity = HistoryEntity(
@@ -49,5 +44,9 @@ class LocalStorage(context: Context) {
             algorithmTitle = algorithmTitle
         )
         historyDao.insert(entity)
+    }
+
+    suspend fun getHistoryCount(): Int {
+        return historyDao.getHistoryCount()
     }
 }

@@ -33,7 +33,7 @@ class MergeSortVisualizer : AlgorithmVisualizer {
             )
         )
 
-        suspend fun merge(left: Int, mid: Int, right: Int) {
+         fun merge(left: Int, mid: Int, right: Int) {
             val leftArray = mutableArray.subList(left, mid + 1).toList()
             val rightArray = mutableArray.subList(mid + 1, right + 1).toList()
 
@@ -124,7 +124,7 @@ class MergeSortVisualizer : AlgorithmVisualizer {
             )
         }
 
-        suspend fun mergeSort(left: Int, right: Int) {
+        fun mergeSort(left: Int, right: Int) {
             if (left < right) {
                 val mid = left + (right - left) / 2
 

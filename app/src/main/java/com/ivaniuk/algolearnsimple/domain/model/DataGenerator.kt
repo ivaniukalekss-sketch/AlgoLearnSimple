@@ -4,19 +4,16 @@ import kotlin.random.Random
 
 object DataGenerator {
 
-    // Генерация случайного массива
     fun generateRandomArray(size: Int = Random.nextInt(8, 15)): List<Int> {
         return List(size) { Random.nextInt(1, 100) }
     }
 
-    // Генерация отсортированного массива для бинарного поиска
     fun generateSortedArray(size: Int = Random.nextInt(8, 15)): List<Int> {
         val start = Random.nextInt(1, 20)
         val step = Random.nextInt(1, 5)
         return List(size) { index -> start + index * step }
     }
 
-    // Генерация данных для бинарного поиска
     fun generateBinarySearchData(): Pair<List<Int>, Int> {
         val array = generateSortedArray()
         val target = if (Random.nextBoolean()) {
@@ -27,7 +24,6 @@ object DataGenerator {
         return Pair(array, target)
     }
 
-    // Генерация случайного графа
     fun generateRandomGraph(vertices: Int = Random.nextInt(5, 8)): Map<Int, List<Int>> {
         val graph = mutableMapOf<Int, MutableList<Int>>()
 
@@ -72,7 +68,6 @@ object DataGenerator {
             }
         }
 
-        // Убедимся, что граф связный
         for (i in 0 until vertices) {
             if (graph[i]?.isEmpty() == true) {
                 val other = (0 until vertices).filter { it != i }.random()

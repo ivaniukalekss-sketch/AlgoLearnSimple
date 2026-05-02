@@ -31,8 +31,6 @@ object AppModule {
         return AlgorithmRepositoryImpl(localStorage)
     }
 
-    // ============= НОВЫЕ ПРОВАЙДЕРЫ ДЛЯ ROOM =============
-
     @Provides
     @Singleton
     fun provideHistoryDatabase(@ApplicationContext context: Context): HistoryDatabase {

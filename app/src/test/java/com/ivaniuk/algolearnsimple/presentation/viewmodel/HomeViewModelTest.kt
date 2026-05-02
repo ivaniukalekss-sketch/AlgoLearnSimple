@@ -1,29 +1,70 @@
 package com.ivaniuk.algolearnsimple.presentation.viewmodel
 
-import org.junit.Test
+import com.ivaniuk.algolearnsimple.domain.model.Algorithm
+import com.ivaniuk.algolearnsimple.domain.model.AlgorithmCategory
+import com.ivaniuk.algolearnsimple.domain.repository.AlgorithmRepository
+import com.ivaniuk.algolearnsimple.domain.usecase.GetAlgorithmsUseCase
+import com.ivaniuk.algolearnsimple.domain.usecase.ToggleFavoriteUseCase
+import com.ivaniuk.algolearnsimple.utils.MainDispatcherRule
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito.*
+import org.mockito.MockitoAnnotations
 
 class HomeViewModelTest {
 
-    @Test
-    fun `test basic assertions`() {
-        assertTrue(1 + 1 == 2)
+    @get:Rule
+    val dispatcherRule = MainDispatcherRule()
 
-        assertEquals(4, 2 + 2)
-        assertNotNull("Test string")
+    @Mock
+    private lateinit var getAlgorithmsUseCase: GetAlgorithmsUseCase
 
-        println("ViewModel тестирование выполнено")
+    @Mock
+    private lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
+
+    @Mock
+    private lateinit var repository: AlgorithmRepository
+
+    private lateinit var viewModel: HomeViewModel
+
+    @Before
+    fun setup() {
+        MockitoAnnotations.openMocks(this)
+        `when`(getAlgorithmsUseCase()).thenReturn(flowOf(emptyList()))
+        viewModel = HomeViewModel(getAlgorithmsUseCase, toggleFavoriteUseCase, repository)
     }
 
     @Test
-    fun `test ViewModel concepts`() {
+    fun testToggleFavorite() = runTest {
+        viewModel.toggleFavorite(1)
 
-        assertTrue("ViewModel should manage state", true)
+        verify(toggleFavoriteUseCase).invoke(1)
+    }
 
-        assertTrue("ViewModel should handle user actions", true)
+    @Test
+    fun testLoadAlgorithmById() = runTest {
+        val expectedAlgorithm = Algorithm(1, "Bubble Sort", "", AlgorithmCategory.SORTING, "O(n²)", "", emptyList(), false)
+        `when`(repository.getAlgorithmById(1)).thenReturn(expectedAlgorithm)
 
-        assertTrue("ViewModel should expose data", true)
+        viewModel.loadAlgorithmById(1)
+        advanceUntilIdle()
 
-        println(" Концепции ViewModel протестированы")
+        assertEquals(expectedAlgorithm, viewModel.currentAlgorithm.value)
+    }
+
+    @Test
+    fun testLoadAlgorithmByIdReturnsNull() = runTest {
+        `when`(repository.getAlgorithmById(999)).thenReturn(null)
+
+        viewModel.loadAlgorithmById(999)
+        advanceUntilIdle()
+
+        assertNull(viewModel.currentAlgorithm.value)
     }
 }

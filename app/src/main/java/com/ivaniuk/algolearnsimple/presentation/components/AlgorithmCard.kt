@@ -52,7 +52,6 @@ fun AlgorithmCard(
                 )
 
                 Row {
-                    // Кнопка визуализации
                     if (onVisualizeClick != null) {
                         IconButton(onClick = onVisualizeClick) {
                             Icon(
@@ -63,7 +62,6 @@ fun AlgorithmCard(
                         }
                     }
 
-                    // Кнопка избранного
                     IconButton(onClick = onFavoriteClick) {
                         Icon(
                             imageVector = if (algorithm.isFavorite) {

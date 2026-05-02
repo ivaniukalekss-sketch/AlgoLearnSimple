@@ -25,118 +25,142 @@ import com.ivaniuk.algolearnsimple.presentation.screens.HistoryScreen
 import com.ivaniuk.algolearnsimple.domain.visualizer.MergeSortVisualizer
 import com.ivaniuk.algolearnsimple.domain.visualizer.DijkstraVisualizer
 import com.ivaniuk.algolearnsimple.presentation.screens.ProfileScreen
+import com.ivaniuk.algolearnsimple.domain.visualizer.SelectionSortVisualizer
+import com.ivaniuk.algolearnsimple.domain.visualizer.InsertionSortVisualizer
+import com.ivaniuk.algolearnsimple.domain.visualizer.LinearSearchVisualizer
+import com.ivaniuk.algolearnsimple.presentation.screens.TutorialScreen
+import com.ivaniuk.algolearnsimple.presentation.viewmodel.TutorialViewModel
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 
 @Composable
 fun AppNavigation() {
-    val viewModel: HomeViewModel = hiltViewModel()
-    val navController = rememberNavController()
-    val coroutineScope = rememberCoroutineScope()
+    val tutorialViewModel: TutorialViewModel = hiltViewModel()
+    var showTutorial by remember {
+        mutableStateOf(!tutorialViewModel.isTutorialSeen())
+    }
 
-    NavHost(
-        navController = navController,
-        startDestination = "home"
-    ) {
-        composable("home") {
-            HomeScreen(
-                viewModel = viewModel,
-                onAlgorithmClick = { algorithmId ->
-                    navController.navigate("algorithm/$algorithmId")
-                },
-                onToggleFavorite = { algorithmId ->
-                    coroutineScope.launch {
-                        viewModel.toggleFavorite(algorithmId)
-                    }
-                },
-                onFavoritesClick = {
-                    navController.navigate("favorites")
-                },
-                onVisualizeClick = { algorithmId ->
-                    navController.navigate("visualization/$algorithmId")
-                },
-                onHistoryClick = { navController.navigate("history") },
-                onProfileClick = { navController.navigate("profile") }
-            )
-        }
+    if (showTutorial) {
+        TutorialScreen(
+            onComplete = {
+                tutorialViewModel.setTutorialSeen()
+                showTutorial = false
+            }
+        )
+    } else {
+        val viewModel: HomeViewModel = hiltViewModel()
+        val navController = rememberNavController()
+        val coroutineScope = rememberCoroutineScope()
 
-        composable("algorithm/{algorithmId}") { backStackEntry ->
-            val algorithmId = backStackEntry.arguments?.getString("algorithmId")?.toIntOrNull()
-
-            LaunchedEffect(algorithmId) {
-                algorithmId?.let {
-                    viewModel.loadAlgorithmById(it)
-                }
+        NavHost(
+            navController = navController,
+            startDestination = "home"
+        ) {
+            composable("home") {
+                HomeScreen(
+                    viewModel = viewModel,
+                    onAlgorithmClick = { algorithmId ->
+                        navController.navigate("algorithm/$algorithmId")
+                    },
+                    onToggleFavorite = { algorithmId ->
+                        coroutineScope.launch {
+                            viewModel.toggleFavorite(algorithmId)
+                        }
+                    },
+                    onFavoritesClick = {
+                        navController.navigate("favorites")
+                    },
+                    onVisualizeClick = { algorithmId ->
+                        navController.navigate("visualization/$algorithmId")
+                    },
+                    onHistoryClick = { navController.navigate("history") },
+                    onProfileClick = { navController.navigate("profile") }
+                )
             }
 
-            // Используем currentAlgorithm из ViewModel
-            val currentAlgorithm by viewModel.currentAlgorithm.collectAsState()
+            composable("algorithm/{algorithmId}") { backStackEntry ->
+                val algorithmId = backStackEntry.arguments?.getString("algorithmId")?.toIntOrNull()
 
-            AlgorithmDetailScreen(
-                algorithm = currentAlgorithm,
-                onBack = { navController.navigateUp() },
-                onToggleFavorite = {
+                LaunchedEffect(algorithmId) {
                     algorithmId?.let {
-                        coroutineScope.launch {
-                            viewModel.toggleFavorite(it)
+                        viewModel.loadAlgorithmById(it)
+                    }
+                }
+
+                val currentAlgorithm by viewModel.currentAlgorithm.collectAsState()
+
+                AlgorithmDetailScreen(
+                    algorithm = currentAlgorithm,
+                    onBack = { navController.navigateUp() },
+                    onToggleFavorite = {
+                        algorithmId?.let {
+                            coroutineScope.launch {
+                                viewModel.toggleFavorite(it)
+                            }
+                        }
+                    },
+                    onVisualizeClick = {
+                        algorithmId?.let {
+                            navController.navigate("visualization/$it")
                         }
                     }
-                },
-                onVisualizeClick = {
-                    algorithmId?.let {
-                        navController.navigate("visualization/$it")
-                    }
-                }
-            )
-        }
-
-        composable("favorites") {
-            FavoritesScreen(
-                viewModel = viewModel,
-                onAlgorithmClick = { algorithmId ->
-                    navController.navigate("algorithm/$algorithmId")
-                },
-                onToggleFavorite = { algorithmId ->
-                    coroutineScope.launch {
-                        viewModel.toggleFavorite(algorithmId)
-                    }
-                },
-                onBack = { navController.navigateUp() }
-            )
-        }
-
-        composable("visualization/{algorithmId}") { backStackEntry ->
-            val algorithmId = backStackEntry.arguments?.getString("algorithmId")?.toIntOrNull()
-
-            val visualizer = when (algorithmId) {
-                1 -> BubbleSortVisualizer()
-                2 -> BinarySearchVisualizer()
-                3 -> QuickSortVisualizer()
-                4 -> DFSVisualizer()
-                5 -> BFSVisualizer()
-                6 -> MergeSortVisualizer()
-                7 -> DijkstraVisualizer()
-                else -> BubbleSortVisualizer()
+                )
             }
 
-            val viewModel = VisualizationViewModel(visualizer)
+            composable("favorites") {
+                FavoritesScreen(
+                    viewModel = viewModel,
+                    onAlgorithmClick = { algorithmId ->
+                        navController.navigate("algorithm/$algorithmId")
+                    },
+                    onToggleFavorite = { algorithmId ->
+                        coroutineScope.launch {
+                            viewModel.toggleFavorite(algorithmId)
+                        }
+                    },
+                    onBack = { navController.navigateUp() }
+                )
+            }
 
-            VisualizationScreen(
-                viewModel = viewModel,
-                onBack = { navController.navigateUp() }
-            )
-        }
+            composable("visualization/{algorithmId}") { backStackEntry ->
+                val algorithmId = backStackEntry.arguments?.getString("algorithmId")?.toIntOrNull()
 
-        composable("history") {
-            HistoryScreen(
-                onBack = { navController.navigateUp() },
-                onAlgorithmClick = { algorithmId ->
-                    navController.navigate("algorithm/$algorithmId")
+                val visualizer = when (algorithmId) {
+                    1 -> BubbleSortVisualizer()
+                    2 -> BinarySearchVisualizer()
+                    3 -> QuickSortVisualizer()
+                    4 -> DFSVisualizer()
+                    5 -> BFSVisualizer()
+                    6 -> MergeSortVisualizer()
+                    7 -> DijkstraVisualizer()
+                    8 -> SelectionSortVisualizer()
+                    9 -> InsertionSortVisualizer()
+                    10 -> LinearSearchVisualizer()
+                    else -> BubbleSortVisualizer()
                 }
-            )
-        }
-        composable("profile") {
-            ProfileScreen(
-                onBack = { navController.navigateUp() }
-            )
+
+                val viewModel = VisualizationViewModel(visualizer)
+
+                VisualizationScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.navigateUp() }
+                )
+            }
+
+            composable("history") {
+                HistoryScreen(
+                    onBack = { navController.navigateUp() },
+                    onAlgorithmClick = { algorithmId ->
+                        navController.navigate("algorithm/$algorithmId")
+                    }
+                )
+            }
+            composable("profile") {
+                ProfileScreen(
+                    onBack = { navController.navigateUp() }
+                ) { showTutorial = true }
+            }
         }
     }
 }

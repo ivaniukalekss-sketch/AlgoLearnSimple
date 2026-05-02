@@ -19,75 +19,101 @@ data class AchievementItem(
 )
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
+open class ProfileViewModel @Inject constructor(
     private val repository: AlgorithmRepository
 ) : ViewModel() {
 
     private val _viewedCount = MutableStateFlow(0)
-    val viewedCount: StateFlow<Int> = _viewedCount.asStateFlow()
+    open val viewedCount: StateFlow<Int> = _viewedCount.asStateFlow()
 
     private val _favoriteCount = MutableStateFlow(0)
-    val favoriteCount: StateFlow<Int> = _favoriteCount.asStateFlow()
+    open val favoriteCount: StateFlow<Int> = _favoriteCount.asStateFlow()
 
     private val _achievements = MutableStateFlow<List<AchievementItem>>(emptyList())
-    val achievements: StateFlow<List<AchievementItem>> = _achievements.asStateFlow()
+    open val achievements: StateFlow<List<AchievementItem>> = _achievements.asStateFlow()
 
     fun loadStats() {
         viewModelScope.launch {
-            val algorithms = repository.getAllAlgorithms().collect { list ->
-                _favoriteCount.value = list.count { it.isFavorite }
-            }
+            val count = repository.getViewedCount()
+            _viewedCount.value = count
         }
 
-        // Временное решение для просмотров
         viewModelScope.launch {
             repository.getFavoriteAlgorithms().collect { favorites ->
                 _favoriteCount.value = favorites.size
+                updateAchievements()
             }
         }
     }
 
-    fun loadAchievements() {
+    private fun updateAchievements() {
         val viewedCountValue = _viewedCount.value
+        val favoriteCountValue = _favoriteCount.value
 
         val achievementsList = listOf(
             AchievementItem(
                 id = "first_view",
-                title = "🌱 Новичок",
+                title = "Новичок",
                 description = "Просмотрел первый алгоритм",
                 icon = "🌱",
                 isUnlocked = viewedCountValue >= 1
             ),
             AchievementItem(
                 id = "three_views",
-                title = "📚 Студент",
+                title = "Студент",
                 description = "Просмотрел 3 алгоритма",
                 icon = "📚",
                 isUnlocked = viewedCountValue >= 3
             ),
             AchievementItem(
                 id = "five_views",
-                title = "🧠 Знаток",
+                title = "Знаток",
                 description = "Просмотрел 5 алгоритмов",
                 icon = "🧠",
                 isUnlocked = viewedCountValue >= 5
             ),
             AchievementItem(
-                id = "all_views",
-                title = "⭐ Мастер",
-                description = "Просмотрел все 7 алгоритмов",
-                icon = "⭐",
+                id = "seven_views",
+                title = "Профессионал",
+                description = "Просмотрел 7 алгоритмов",
+                icon = "🎓",
                 isUnlocked = viewedCountValue >= 7
             ),
             AchievementItem(
+                id = "all_views",
+                title = "Мастер",
+                description = "Просмотрел все 10 алгоритмов",
+                icon = "⭐",
+                isUnlocked = viewedCountValue >= 10
+            ),
+            AchievementItem(
                 id = "first_favorite",
-                title = "❤️ Первое избранное",
+                title = "Первое избранное",
                 description = "Добавил алгоритм в избранное",
                 icon = "❤️",
-                isUnlocked = _favoriteCount.value >= 1
+                isUnlocked = favoriteCountValue >= 1
+            ),
+            AchievementItem(
+                id = "three_favorites",
+                title = "Коллекционер",
+                description = "Добавил 3 алгоритма в избранное",
+                icon = "💖",
+                isUnlocked = favoriteCountValue >= 3
             )
         )
 
         _achievements.value = achievementsList
+    }
+
+    fun refreshStats() {
+        viewModelScope.launch {
+            val count = repository.getViewedCount()
+            _viewedCount.value = count
+
+            repository.getFavoriteAlgorithms().collect { favorites ->
+                _favoriteCount.value = favorites.size
+                updateAchievements()
+            }
+        }
     }
 }

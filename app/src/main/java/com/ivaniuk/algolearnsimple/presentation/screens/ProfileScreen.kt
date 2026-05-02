@@ -1,8 +1,8 @@
 package com.ivaniuk.algolearnsimple.presentation.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -14,28 +14,35 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.ProfileViewModel
-import androidx.compose.foundation.background
-
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     onBack: () -> Unit,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    onShowTutorial: () -> Unit,
 ) {
     val viewedCount by viewModel.viewedCount.collectAsState()
     val favoriteCount by viewModel.favoriteCount.collectAsState()
     val achievements by viewModel.achievements.collectAsState()
+    var showAboutDialog by remember { mutableStateOf(false) }
 
-    // Загружаем данные при запуске
     LaunchedEffect(Unit) {
         viewModel.loadStats()
-        viewModel.loadAchievements()
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.refreshStats()
     }
 
     Scaffold(
@@ -57,7 +64,9 @@ fun ProfileScreen(
                 }
             )
         }
-    ) { paddingValues ->
+
+    )
+    { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -65,7 +74,6 @@ fun ProfileScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // ===== Аватар и приветствие =====
             item {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -100,7 +108,6 @@ fun ProfileScreen(
                 }
             }
 
-            // ===== Статистика =====
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -135,10 +142,11 @@ fun ProfileScreen(
                             StatCard(
                                 value = "${
                                     when {
-                                        viewedCount >= 7 -> "100"
-                                        viewedCount >= 5 -> "80"
-                                        viewedCount >= 3 -> "60"
-                                        viewedCount >= 1 -> "30"
+                                        viewedCount >= 10 -> "100"
+                                        viewedCount >= 7 -> "80"
+                                        viewedCount >= 5 -> "60"
+                                        viewedCount >= 3 -> "30"
+                                        viewedCount >= 1 -> "15"
                                         else -> "0"
                                     }
                                 }%",
@@ -150,7 +158,6 @@ fun ProfileScreen(
                 }
             }
 
-            // ===== Достижения =====
             item {
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(
@@ -163,41 +170,94 @@ fun ProfileScreen(
                         )
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        achievements.forEach { achievement ->
-                            AchievementRow(achievement = achievement)
-                            Spacer(modifier = Modifier.height(8.dp))
+                        if (achievements.isEmpty()) {
+                            Text("Загрузка...")
+                        } else {
+                            achievements.forEach { achievement ->
+                                AchievementRow(achievement = achievement)
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
                         }
                     }
                 }
             }
 
-            // ===== Настройки темы (заглушка) =====
             item {
-                Card(modifier = Modifier.fillMaxWidth()) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { showAboutDialog = true }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "⚙️ Настройки",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
+                            text = "ℹ️",
+                            fontSize = 24.sp
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text("Тёмная тема")
-                            Switch(
-                                checked = false,
-                                onCheckedChange = { /* TODO для тёмной темы */ }
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text(
+                                text = "О приложении",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Версия 1.0.0",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(8.dp))
+                Divider(modifier = Modifier.padding(horizontal = 16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Card(modifier = Modifier.fillMaxWidth(),
+                    onClick = { onShowTutorial() }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("❓", fontSize = 24.sp)
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text("Помощь", fontWeight = FontWeight.Bold)
+                            Text("Показать туториал", style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
             }
+        }
+
+        if (showAboutDialog) {
+            AlertDialog(
+                onDismissRequest = { showAboutDialog = false },
+                title = { Text("О приложении", fontWeight = FontWeight.Bold) },
+                text = {
+                    Column {
+                        Text("AlgoLearnSimple", style = MaterialTheme.typography.titleMedium)
+                        Text("Версия 1.0.0")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Приложение для интерактивного изучения алгоритмов с пошаговой визуализацией.")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("📊 10 алгоритмов:\n• Bubble Sort\n• Binary Search\n• Quick Sort\n• DFS\n• BFS\n• Merge Sort\n• Dijkstra\n• Selection Sort\n• Insertion Sort\n• Linear Search")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("📚 Особенности:\n• История просмотров\n• Избранное\n• Достижения\n• Статистика")
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { showAboutDialog = false }) {
+                        Text("Закрыть")
+                    }
+                }
+            )
         }
     }
 }
@@ -252,7 +312,10 @@ fun AchievementRow(
                 Text(
                     text = achievement.title,
                     style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = if (achievement.isUnlocked) FontWeight.Bold else FontWeight.Normal
+                    fontWeight = if (achievement.isUnlocked)
+                        FontWeight.Bold
+                    else
+                        FontWeight.Normal
                 )
                 Text(
                     text = achievement.description,
@@ -270,5 +333,6 @@ fun AchievementRow(
         } else {
             Text("🔒", fontSize = 20.sp)
         }
+
     }
 }

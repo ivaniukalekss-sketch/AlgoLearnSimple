@@ -33,7 +33,6 @@ fun ArrayVisualizer(
     val maxValue = if (array.isNotEmpty()) array.maxOrNull() ?: 1 else 1
     val maxBarHeight = 220.dp
 
-    // Определяем размер текста на основе количества элементов
     val valueTextSize = when {
         array.size <= 8 -> 14.sp
         array.size <= 15 -> 12.sp
@@ -71,7 +70,6 @@ fun ArrayVisualizer(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 array.forEachIndexed { index, value ->
-                    // Вычисляем высоту
                     val normalizedHeight = if (maxValue > 0) {
                         (value.toFloat() / maxValue.toFloat()) * maxBarHeight.value
                     } else {
@@ -79,7 +77,6 @@ fun ArrayVisualizer(
                     }
                     val targetHeight = normalizedHeight.dp
 
-                    // Цвет - исправленный when с subject
                     val targetColor = when (index) {
                         in comparingIndices -> Color(0xFFFFA726)
                         in swappedIndices -> Color(0xFFEF5350)
@@ -89,21 +86,18 @@ fun ArrayVisualizer(
                         else -> MaterialTheme.colorScheme.primary
                     }
 
-                    // Анимация высоты
                     val animatedHeight by animateDpAsState(
                         targetValue = targetHeight,
                         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
                         label = "height_$index"
                     )
 
-                    // Анимация цвета
                     val animatedColor by animateColorAsState(
                         targetValue = targetColor,
                         animationSpec = tween(durationMillis = 200),
                         label = "color_$index"
                     )
 
-                    // Цвет текста
                     val textColor = if (animatedColor == MaterialTheme.colorScheme.primary) {
                         MaterialTheme.colorScheme.onPrimary
                     } else {
@@ -120,7 +114,6 @@ fun ArrayVisualizer(
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            // Столбец
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -141,7 +134,6 @@ fun ArrayVisualizer(
                                 )
                             }
 
-                            // Индекс
                             Text(
                                 text = "[$index]",
                                 style = MaterialTheme.typography.labelSmall.copy(
@@ -157,7 +149,6 @@ fun ArrayVisualizer(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Легенда
         val legendItems = listOf(
             LegendItem(Color(0xFF66BB6A), "Отсортировано"),
             LegendItem(Color(0xFFFFA726), "Сравнение"),

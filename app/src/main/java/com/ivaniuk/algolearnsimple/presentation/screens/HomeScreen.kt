@@ -63,7 +63,6 @@ fun HomeScreen(
                         )
                     },
                     actions = {
-                        // Кнопка избранного
                         IconButton(onClick = onFavoritesClick) {
                             Icon(
                                 imageVector = Icons.Default.Favorite,

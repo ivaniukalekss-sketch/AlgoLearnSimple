@@ -2,7 +2,6 @@ package com.ivaniuk.algolearnsimple.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivaniuk.algolearnsimple.data.local.HistoryEntity
 import com.ivaniuk.algolearnsimple.domain.usecase.ClearHistoryUseCase
 import com.ivaniuk.algolearnsimple.domain.usecase.GetRecentHistoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,9 +26,7 @@ class HistoryViewModel @Inject constructor(
     fun clearHistory() {
         viewModelScope.launch {
             clearHistoryUseCase()
-            // Обновляем состояние
             getRecentHistoryUseCase().collect { newHistory ->
-                // Состояние обновится автоматически через stateIn
             }
         }
     }

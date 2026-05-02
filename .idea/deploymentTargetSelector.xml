@@ -13,7 +13,7 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="NavigationSmokeTest">
+      <SelectionState runConfigName="Tests in 'com.ivaniuk.algolearnsimple'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

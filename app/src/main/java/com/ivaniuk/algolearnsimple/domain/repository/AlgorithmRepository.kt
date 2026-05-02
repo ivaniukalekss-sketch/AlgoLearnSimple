@@ -9,4 +9,5 @@ interface AlgorithmRepository {
     fun getFavoriteAlgorithms(): Flow<List<Algorithm>>
     suspend fun toggleFavorite(algorithmId: Int)
     suspend fun getAlgorithmById(id: Int): Algorithm?
+    suspend fun getViewedCount(): Int
 }

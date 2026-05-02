@@ -3,6 +3,7 @@ package com.ivaniuk.algolearnsimple
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.ivaniuk.algolearnsimple.data.local.LocalStorage
 import com.ivaniuk.algolearnsimple.data.repository.AlgorithmRepositoryImpl
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -15,11 +16,13 @@ import org.junit.runner.RunWith
 class AlgorithmRepositoryInstrumentedTest {
 
     private lateinit var repository: AlgorithmRepositoryImpl
+    private lateinit var localStorage: LocalStorage
 
     @Before
     fun setup() {
         val context: Context = ApplicationProvider.getApplicationContext()
-        repository = AlgorithmRepositoryImpl(context)
+        localStorage = LocalStorage(context)
+        repository = AlgorithmRepositoryImpl(localStorage)
     }
 
     @Test
@@ -29,7 +32,8 @@ class AlgorithmRepositoryInstrumentedTest {
         repository.toggleFavorite(algorithmId)
 
         val context: Context = ApplicationProvider.getApplicationContext()
-        val newRepository = AlgorithmRepositoryImpl(context)
+        val newLocalStorage = LocalStorage(context)
+        val newRepository = AlgorithmRepositoryImpl(newLocalStorage)
 
         val algorithm = newRepository.getAlgorithmById(algorithmId)
 
@@ -42,12 +46,17 @@ class AlgorithmRepositoryInstrumentedTest {
         val algorithms = repository.getAllAlgorithms()
             .first { it.isNotEmpty() }
 
-        assertEquals(5, algorithms.size)
+        assertEquals(10, algorithms.size)  // Теперь 10 алгоритмов
         assertEquals("Bubble Sort", algorithms[0].title)
         assertEquals("Binary Search", algorithms[1].title)
         assertEquals("Quick Sort", algorithms[2].title)
         assertEquals("DFS (Depth-First Search)", algorithms[3].title)
         assertEquals("BFS (Breadth-First Search)", algorithms[4].title)
+        assertEquals("Merge Sort", algorithms[5].title)
+        assertEquals("Dijkstra", algorithms[6].title)
+        assertEquals("Selection Sort", algorithms[7].title)
+        assertEquals("Insertion Sort", algorithms[8].title)
+        assertEquals("Linear Search", algorithms[9].title)
     }
 
     @Test
@@ -80,18 +89,16 @@ class AlgorithmRepositoryInstrumentedTest {
 
     @Test
     fun testGetAlgorithmsByCategory() = runBlocking {
-
         val category = "SORTING"
 
         val algorithms = repository.getAlgorithmsByCategory(category).first()
 
-        assertEquals(2, algorithms.size)
+        assertEquals(5, algorithms.size)
         assertTrue(algorithms.all { it.category.name == category })
     }
 
     @Test
     fun testGetNonExistentAlgorithm() = runBlocking {
-
         val nonExistentId = 999
 
         val algorithm = repository.getAlgorithmById(nonExistentId)

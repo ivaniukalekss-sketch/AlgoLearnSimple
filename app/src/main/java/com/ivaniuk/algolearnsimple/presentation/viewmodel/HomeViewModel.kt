@@ -16,20 +16,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val getAlgorithmsUseCase: GetAlgorithmsUseCase,
+open class HomeViewModel @Inject constructor(
+    getAlgorithmsUseCase: GetAlgorithmsUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
-    private val repository: AlgorithmRepository  // ← ДОБАВИТЬ
+    private val repository: AlgorithmRepository
 ) : ViewModel() {
 
-    val algorithms = getAlgorithmsUseCase()
+    open val algorithms = getAlgorithmsUseCase()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
 
-    // Для текущего алгоритма
     private val _currentAlgorithm = MutableStateFlow<Algorithm?>(null)
     val currentAlgorithm: StateFlow<Algorithm?> = _currentAlgorithm.asStateFlow()
 
@@ -41,10 +40,8 @@ class HomeViewModel @Inject constructor(
 
     fun loadAlgorithmById(id: Int) {
         viewModelScope.launch {
-            println("🔥 loadAlgorithmById: загружаем алгоритм $id")
             val algorithm = repository.getAlgorithmById(id)
             _currentAlgorithm.value = algorithm
-            println("🔥 loadAlgorithmById: загружен ${algorithm?.title}")
         }
     }
 }
