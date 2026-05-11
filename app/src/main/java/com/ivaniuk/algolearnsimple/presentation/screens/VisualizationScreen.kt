@@ -19,6 +19,11 @@ import com.ivaniuk.algolearnsimple.presentation.components.ArrayVisualizer
 import com.ivaniuk.algolearnsimple.presentation.components.GraphVisualizer
 import com.ivaniuk.algolearnsimple.presentation.components.GraphLegend
 import com.ivaniuk.algolearnsimple.presentation.viewmodel.VisualizationViewModel
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,6 +37,13 @@ fun VisualizationScreen(
     val isPlaying by viewModel.isPlaying.collectAsState()
     val speed by viewModel.speed.collectAsState()
     val isRandomData by viewModel.isRandomData.collectAsState()
+    val customTarget by viewModel.customTarget.collectAsState()
+
+    val isArrayAlgorithm = viewModel.getAlgorithmName() in listOf(
+        "Bubble Sort", "Quick Sort", "Merge Sort",
+        "Selection Sort", "Insertion Sort",
+        "Binary Search", "Linear Search"
+    )
 
     val currentStep = viewModel.getCurrentStep()
     LaunchedEffect(isPlaying, currentStepIndex) {
@@ -64,6 +76,15 @@ fun VisualizationScreen(
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
+                    if (isArrayAlgorithm) {
+                        IconButton(onClick = { viewModel.showCustomDataDialog() }) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Ввести свой массив",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
                 }
             )
         },
@@ -74,6 +95,61 @@ fun VisualizationScreen(
             )
         }
     ) { paddingValues ->
+        val showDialog by viewModel.showCustomDataDialog.collectAsState()
+        val customDataInput by viewModel.customDataInput.collectAsState()
+        val inputError by viewModel.inputError.collectAsState()
+
+        if (showDialog) {
+            val isSearchAlgorithm = viewModel.getAlgorithmName() in listOf("Binary Search", "Linear Search")
+            AlertDialog(
+                onDismissRequest = { viewModel.dismissCustomDataDialog() },
+                title = { Text("Введите свой массив") },
+                text = {
+                    Column {
+                        Text(
+                            text = "Введите целые числа через пробел, запятую или точку с запятой",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        OutlinedTextField(
+                            value = customDataInput,
+                            onValueChange = { viewModel.setCustomDataInput(it) },
+                            label = { Text("Массив чисел") },
+                            placeholder = { Text("Пример: 5 2 8 1 9") },
+                            isError = inputError != null,
+                            supportingText = {
+                                inputError?.let {
+                                    Text(it, color = MaterialTheme.colorScheme.error)
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        if (isSearchAlgorithm) {
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            OutlinedTextField(
+                                value = customTarget,
+                                onValueChange = { viewModel.setCustomTarget(it) },
+                                label = { Text("Искомое значение (target)") },
+                                placeholder = { Text("Пример: 5") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { viewModel.submitCustomData() }) {
+                        Text("Применить")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { viewModel.dismissCustomDataDialog() }) {
+                        Text("Отмена")
+                    }
+                }
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()

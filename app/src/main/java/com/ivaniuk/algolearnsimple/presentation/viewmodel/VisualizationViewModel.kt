@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+
 class VisualizationViewModel(
     private val visualizer: AlgorithmVisualizer
 ) : ViewModel() {
@@ -149,5 +150,85 @@ class VisualizationViewModel(
     fun goToLastStep() {
         _currentStepIndex.value = _steps.value.size - 1
         pause()
+    }
+    private val _showCustomDataDialog = MutableStateFlow(false)
+    val showCustomDataDialog: StateFlow<Boolean> = _showCustomDataDialog.asStateFlow()
+
+    private val _customDataInput = MutableStateFlow("")
+    val customDataInput: StateFlow<String> = _customDataInput.asStateFlow()
+
+    private val _inputError = MutableStateFlow<String?>(null)
+    val inputError: StateFlow<String?> = _inputError.asStateFlow()
+
+    private var _customTarget = MutableStateFlow("")
+    val customTarget: StateFlow<String> = _customTarget.asStateFlow()
+
+    fun setCustomTarget(value: String) {
+        _customTarget.value = value
+    }
+
+    fun showCustomDataDialog() {
+        _customDataInput.value = ""
+        _inputError.value = null
+        _showCustomDataDialog.value = true
+    }
+
+    fun dismissCustomDataDialog() {
+        _showCustomDataDialog.value = false
+        _inputError.value = null
+    }
+
+    fun setCustomDataInput(value: String) {
+        _customDataInput.value = value
+        _inputError.value = null
+    }
+
+    fun submitCustomData() {
+        val input = _customDataInput.value.trim()
+        if (input.isEmpty()) {
+            _inputError.value = "Поле не может быть пустым"
+            return
+        }
+
+        val numbers = input.split(Regex("[ ,;]+")).mapNotNull { it.toIntOrNull() }
+
+        if (numbers.isEmpty()) {
+            _inputError.value = "Введите хотя бы одно целое число"
+            return
+        }
+
+        if (numbers.size < 3) {
+            _inputError.value = "Рекомендуемый размер массива — не менее 3 элементов"
+        }
+
+        val algoName = visualizer.algorithmName
+
+        if (algoName == "Binary Search" || algoName == "Linear Search") {
+            val targetStr = _customTarget.value.trim()
+            val target = if (targetStr.isNotEmpty()) {
+                targetStr.toIntOrNull()
+            } else {
+                numbers.random()
+            }
+
+            if (target == null) {
+                _inputError.value = "Введите целое число для поиска"
+                return
+            }
+
+            if (algoName == "Linear Search") {
+                loadVisualization(Pair(numbers, target))
+            } else {
+                val sortedNumbers = numbers.sorted()
+                loadVisualization(Pair(sortedNumbers, target))
+            }
+        } else {
+            loadVisualization(numbers)
+        }
+
+        _isRandomData.value = false
+        _showCustomDataDialog.value = false
+        _inputError.value = null
+        _customTarget.value = ""
     }
 }
